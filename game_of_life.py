@@ -10,4 +10,11 @@
 
 # imports
 
+
 print "Hello World!"
+
+
+# TODO :
+#  Determine ruleset functions (different logic functions)
+#  How will user determine whicch ruleset to use?
+#  Which PyGame module/s are best and needed for this project?
