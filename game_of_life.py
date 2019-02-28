@@ -5,16 +5,135 @@
 # Description
 #
 # Authors: Kaelan Engholdt, Garrett Kern, Kyle McElligott
-# Date: 2/25/2019
+# Start Date: 2/25/2019
 #
 
 # imports
 
 
-print "Hello World!"
+'''
+RULESETS:
+    Rulesets are named using the following format:
+    Survival / Birth / States / Neighboorhood
+    
+    For example, Conway's Game of Life has the following ruleset:
+    2,3 / 3 / 2 / M
+    
+    If a cell has exactly 2 or 3 neighbors, it will survive to the next generation, otherwise it dies
+    A cell is born if it has exactly 3 neighbors
+    There are 2 states, alive and dead
+    Utilizes the Moore neighborhood
 
 
-# TODO :
-#  Determine ruleset functions (different logic functions)
-#  How will user determine whicch ruleset to use?
-#  Which PyGame module/s are best and needed for this project?
+SURVIVAL:
+    Survival means a cell will stay alive (active) until the next generation if it satisfies the neighborhood conditions
+    If the neighborhood conditions are not satisfied, the cell will die (deactivate)
+    
+    If a cell has exactly x neighbors, it will survive to the next generation, otherwise it dies
+
+
+BIRTH:
+    Birth means a cell that is dead (deactive) will be born (activate) in the next generation if it satisfies the neighborhood conditions
+    A cell is considered a neighbor if it is within the specified neighborhood and in the alive (active) state
+    
+    A cell is born if it has exactly x neighboors
+
+
+STATES:
+    States refers to the number of states that a cell has
+    A cell can theoretically have an infinite number of states, but a limit of 10 is most reasonable
+    
+    There are x states, alive, dead, and x-2 states of decay
+    
+    For example, if a cell has 4 states, it has the following behavior:
+    0 - Dead    (Graphically, this cell is white)
+    1 - Alive   (Graphically, this cell is black)
+    2 - Dying   (Graphically, this cell is a color different from all previous colors)
+    3 - Dying   (Graphically, this cell is a color different from all previous colors)
+    
+    After the final state of decay, the cell will die (deactivate) and return to a value of 0
+    
+    For the purposes of birth, the states of decay (dying) are not considered to be alive
+
+
+NEIGHBORHOOD:
+    The neighborhood of a cell is defined according to the type of neighborhood it is given
+    There are two main neighborhoods:
+        Moore Neighboorhood (M): All 8 cells surrounding the central cell both diagonally and orthogonally
+            Domain: {1,2,3,4,5,6,7,8}
+        Von Neumann Neighborhood (VN): Only the 4 cells surrounding the central cell orthogonally
+            Domain: {1,2,3,4}
+
+
+NOTE:
+    A domain of 0 is allowed for the Survival value, this means that a living cell will always die in the next generation
+
+
+REFERENCES:
+www.mirekw.com/ca/index.html
+'''
+
+
+# main method
+def main():
+    print "This is the main method"
+
+
+'''
+RULESETS
+'''
+
+# user decides ruleset
+def rules():
+    user = 1  # user determined ruleset
+    
+    if user == 1:
+        ruleset = conway
+
+
+# Conway's Game of Life Ruleset: 2,3 / 3 / 2 / M
+def conway():
+    print "This is Conway's Game of Life"
+
+
+# Brian's Brain Ruleset: 0 / 2 / 3 / M
+def brian():
+    print "This is Brian's Brain"
+
+
+# generates random values for Survival / Birth / States / Neighboorhood
+def random_ruleset():
+    print "This is a random ruleset"
+
+
+# user defines all values for Survival / Birth / States / Neighboorhood
+def custom():
+    print "This is a custom ruleset"
+    # must define Neighborhood first to decide domain of Survival and Birth
+
+
+'''
+GUI
+'''
+
+# user defines seed
+def seed():
+    print "This is the seed function"
+
+
+# randomly fills the world with alive and dead cells
+def seed_random():
+    print "This is the random seed"
+
+
+# creates GUI
+def world():
+    print "This is the world function"
+
+
+'''
+MAIN
+'''
+
+if __name__ == "__main__":
+    main()
