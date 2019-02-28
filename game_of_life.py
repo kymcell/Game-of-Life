@@ -14,6 +14,13 @@
 
 
 '''
+WORLD:
+    The game world consists of a theoretically infinite 2-Dimensional grid of orthogonal squares
+    For our purposes the grid will have a finite limit, chosen from 3 options by the user
+        Large: X x X squares
+        Medium: Y x Y squares
+        Small: Z x Z squares
+
 RULESETS:
     Rulesets are named using the following format:
     Survival / Birth / States / Neighboorhood
@@ -85,7 +92,7 @@ def main():
 RULESETS
 '''
 
-# user decides ruleset
+# user chooses which ruleset will be used
 def rules():
     user = 1  # user determined ruleset
     
@@ -111,7 +118,21 @@ def random_ruleset():
 # user defines all values for Survival / Birth / States / Neighboorhood
 def custom():
     print "This is a custom ruleset"
-    # must define Neighborhood first to decide domain of Survival and Birth
+    # user must define Neighborhood first to decide domain of Survival and Birth
+
+
+'''
+NEIGHBORHOOD
+'''
+
+# Moore Neighborhood
+def moore():
+    print "This is the Moore Neighborhood"
+
+
+# Von Neumann Neighborhood
+def neumann():
+    print "This is the Von Neumann Neighborhood"
 
 
 '''
@@ -138,4 +159,14 @@ MAIN
 '''
 
 if __name__ == "__main__":
+    
+    # global variables
+    SURVIVAL = []
+    BIRTH = []
+    STATES = []
+    NEIGHBORHOOD = "M"
+    
+    GENERATION = 0
+    SPEED = 0
+    
     main()
