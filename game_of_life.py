@@ -2,7 +2,8 @@
 # CS 224 Spring 2019
 # Semester Project
 #
-# Description
+# There are infinite possibilities within the realm of cellular automata.
+# This program seeks to emulate many of those possibilities through completely customizable parameters and a user friendly GUI.
 #
 # Authors: Kaelan Engholdt, Garrett Kern, Kyle McElligott
 # Start Date: 2/25/2019
