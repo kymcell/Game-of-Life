@@ -10,7 +10,6 @@
 # Due Date: 5/6/2019
 #
 
-
 '''
 WORLD:
     The game world consists of a theoretically infinite 2-Dimensional grid of orthogonal squares
@@ -24,7 +23,7 @@ RULESETS:
     Survival / Birth / States / Neighboorhood
     
     For example, Conway's Game of Life has the following ruleset:
-    2, 3 / 3 / 2 / M
+    [2, 3] / [3] / 2 / M
     
     If a cell has exactly 2 or 3 neighbors, it will survive to the next generation, otherwise it dies
     A cell is born if it has exactly 3 neighbors
@@ -71,24 +70,23 @@ NEIGHBORHOOD:
         Von Neumann Neighborhood (VN): Only the 4 cells surrounding the central cell orthogonally
             Domain: {1,2,3,4}
 
-
 NOTE:
     A domain of 0 is allowed for the Survival value, this means that a living cell will always die in the next generation
-
 
 REFERENCES:
 www.mirekw.com/ca/index.html
 '''
 
 # imports
-from random import *
+from rulesets import *
+from neighborhood import *
 
 
 # main method
 def main():
     print "This is the main method"
     
-    random_ruleset()
+    SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, RULESET = random_ruleset()
     
     print SURVIVAL
     print BIRTH
@@ -98,118 +96,15 @@ def main():
 
 
 '''
-RULESETS
+RULES
 '''
 
 # user chooses which ruleset will be used
 def rules():
-    
     user = 1  # user determined ruleset
     
     if user == 1:
         conway()
-
-
-# Conway's Game of Life Ruleset: 2, 3 / 3 / 2 / M
-def conway():
-    
-    # import globals
-    global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, RULESET
-    
-    # set globals
-    SURVIVAL = [2,3]
-    BIRTH = [3]
-    STATES = range(2)
-    NEIGHBORHOOD = "M"
-    RULESET = "2, 3 / 3 / 2 / M"
-
-
-# Brian's Brain Ruleset: 0 / 2 / 3 / M
-def brian():
-    
-    # import globals
-    global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, RULESET
-    
-    # set globals
-    SURVIVAL = [0]
-    BIRTH = [2]
-    STATES = range(3)
-    NEIGHBORHOOD = "M"
-    RULESET = "0 / 2 / 3 / M"
-
-
-# generates random values for Survival / Birth / States / Neighboorhood
-def random_ruleset():
-    
-    # import globals
-    global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, RULESET
-    
-    # randomly pick the neighborhood
-    option = randint(0,1)
-    if (option == 0):
-        NEIGHBORHOOD = "M"
-    if (option == 1):
-        NEIGHBORHOOD = "VN"
-    
-    # randomly pick SURVIVAL values
-    if (NEIGHBORHOOD == "M"):
-        upper_bound = 8
-    if (NEIGHBORHOOD == "VN"):
-        upper_bound = 4
-    num_survival = randint(1,upper_bound)
-    i = 0
-    neighbors = randint(0, upper_bound)
-    if (neighbors == 0):
-        SURVIVAL.append(neighbors)
-        i = num_survival
-    while (i < num_survival):
-        neighbors = randint(1,upper_bound)
-        if (neighbors not in SURVIVAL):
-            SURVIVAL.append(neighbors)
-            i += 1
-    
-    # randomly pick BIRTH values
-    if (NEIGHBORHOOD == "M"):
-        upper_bound = 8
-    if (NEIGHBORHOOD == "VN"):
-        upper_bound = 4
-    num_birth = randint(1,upper_bound)
-    i=0
-    while (i < num_birth):
-        neighbors = randint(1,upper_bound)
-        if (neighbors not in BIRTH):
-            BIRTH.append(neighbors)
-            i += 1
-    
-    # randomly pick STATES values
-    option = randint(2,10)
-    STATES = range(option)
-    
-    # generate RULESET
-    RULESET = (str(SURVIVAL) + " / " + str(BIRTH) + " / " + str(option) + " / " + NEIGHBORHOOD).replace("[", "").replace("]", "")
-
-
-# user defines all values for Survival / Birth / States / Neighboorhood
-def custom():
-    print "This is a custom ruleset"
-    # user must define Neighborhood first to decide domain of Survival and Birth
-
-    # import globals
-    global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, RULESET
-
-
-'''
-NEIGHBORHOOD
-'''
-
-# Moore Neighborhood
-def moore():
-    print "This is the Moore Neighborhood"
-
-
-# Von Neumann Neighborhood
-def neumann():
-    print "This is the Von Neumann Neighborhood"
 
 
 '''
