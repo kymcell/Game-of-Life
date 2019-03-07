@@ -2,8 +2,7 @@
 # CS 224 Spring 2019
 # Semester Project
 #
-# There are infinite possibilities within the realm of cellular automata.
-# This program seeks to emulate many of those possibilities through completely customizable parameters and a user friendly GUI.
+# Holds cell values and methods for changing cell values, comprises all cells in the game_of_life.py
 #
 # Authors: Kaelan Engholdt, Garrett Kern, Kyle McElligott
 # Start Date: 2/25/2019
@@ -11,26 +10,6 @@
 #
 
 '''
-WORLD:
-    The game world consists of a theoretically infinite 2-Dimensional grid of orthogonal squares
-    For our purposes the grid will have a finite limit, chosen from 3 options by the user
-        Large: X x X squares
-        Medium: Y x Y squares
-        Small: Z x Z squares
-
-RULESETS:
-    Rulesets are named using the following format:
-    Survival / Birth / States / Neighboorhood
-    
-    For example, Conway's Game of Life has the following ruleset:
-    [2, 3] / [3] / 2 / M
-    
-    If a cell has exactly 2 or 3 neighbors, it will survive to the next generation, otherwise it dies
-    A cell is born if it has exactly 3 neighbors
-    There are 2 states, alive and dead
-    Utilizes the Moore neighborhood
-
-
 SURVIVAL:
     Survival means a cell will stay alive (active) until the next generation if it satisfies the neighborhood conditions
     If the neighborhood conditions are not satisfied, the cell will die (deactivate)
@@ -72,73 +51,50 @@ NEIGHBORHOOD:
 
 NOTE:
     A domain of 0 is allowed for the Survival value, this means that a living cell will always die in the next generation
-
-REFERENCES:
-www.mirekw.com/ca/index.html
 '''
 
 # imports
+import Tkinter
 from rulesets import *
 from neighborhood import *
 
+# TODO : Try using Tkinter grids to make matrix of cells
 
-# main method
-def main():
-    
-    SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, RULESET = random_ruleset()
-    
-    print SURVIVAL
-    print BIRTH
-    print STATES
-    print NEIGHBORHOOD
-    print RULESET
-
-
-'''
-RULES
-'''
-
-# user chooses which ruleset will be used
-def rules():
-    user = 1  # user determined ruleset
-    
-    if user == 1:
-        conway()
-
-
-'''
-GUI
-'''
-
-# user defines seed
-def seed():
-    print "This is the seed function"
-
-
-# randomly fills the world with alive and dead cells
-def seed_random():
-    print "This is the random seed"
-
-
-# creates grid
-def world():
-    print "This is the world function"
-
-
-'''
-MAIN
-'''
-
-if __name__ == "__main__":
-    
+class cell(object):
     # global variables
     SURVIVAL = []
     BIRTH = []
     STATES = []
     NEIGHBORHOOD = "Neighborhood"
     RULESET = "Survival / Birth / States / Neighborhood"
+    NEIGHBORS = 0
     
-    GENERATION = 0
-    SPEED = 0
+    def __init__(self, SURVIVAL_PARAM, BIRTH_PARAM, STATES_PARAM, NEIGHBORHOOD_PARAM, RULESET_PARAM):
+        # import globals
+        global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, RULESET
+        
+        SURVIVAL = SURVIVAL_PARAM
+        BIRTH = BIRTH_PARAM
+        STATES = STATES_PARAM
+        NEIGHBORHOOD = NEIGHBORHOOD_PARAM
+        RULESET = RULESET_PARAM
     
-    main()
+    
+    # updates number of neighbors
+    def update_neighbors(self):
+        # import globals
+        global NEIGHBORS
+        
+        NEIGHBORS += 1
+    
+    
+    # advances the state of the cell
+    def change_state(self):
+        # import globals
+        global STATES
+    
+    
+    # births the cell
+    def birth(self):
+        # import globals
+        global BIRTH
