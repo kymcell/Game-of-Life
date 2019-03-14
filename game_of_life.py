@@ -80,6 +80,10 @@ www.mirekw.com/ca/index.html
 # imports
 from rulesets import *
 from neighborhood import *
+from Tkinter import *
+from random import *
+from time import *
+from cell import *
 
 
 # main method
@@ -92,6 +96,8 @@ def main():
     print STATES
     print NEIGHBORHOOD
     print RULESET
+    
+    world()
 
 
 '''
@@ -120,9 +126,29 @@ def seed_random():
     print "This is the random seed"
 
 
+'''
+Tkinter Colors:
+http://www.science.smith.edu/dftwiki/index.php/Color_Charts_for_TKinter
+'''
 # creates grid
 def world():
-    print "This is the world function"
+    # create window
+    window = Tk()
+    
+    # rows and columns for grid
+    cols = 80
+    rows = 40
+    
+    # create 2D list of cell objects, passing appropriate parameters
+    grid_list = [cell(SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, RULESET, window) for i in range(cols) for j in range(rows)]
+    
+    # create grid
+    for i in range(rows):
+        for j in range(cols):
+            grid_list[i][j].grid(row=i, col=j)
+    
+    # display window
+    window.mainloop()
 
 
 '''

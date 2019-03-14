@@ -69,7 +69,10 @@ class cell(object):
     RULESET = "Survival / Birth / States / Neighborhood"
     NEIGHBORS = 0
     
-    def __init__(self, SURVIVAL_PARAM, BIRTH_PARAM, STATES_PARAM, NEIGHBORHOOD_PARAM, RULESET_PARAM):
+    
+    def __init__(self, SURVIVAL_PARAM, BIRTH_PARAM, STATES_PARAM, NEIGHBORHOOD_PARAM, RULESET_PARAM, WINDOW):
+        # call parent constructor
+        
         # import globals
         global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, RULESET
         
@@ -78,6 +81,8 @@ class cell(object):
         STATES = STATES_PARAM
         NEIGHBORHOOD = NEIGHBORHOOD_PARAM
         RULESET = RULESET_PARAM
+        
+        self.Label(WINDOW, width="2", height="1", bg="blue")
     
     
     # updates number of neighbors
