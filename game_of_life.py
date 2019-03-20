@@ -20,7 +20,7 @@ WORLD:
 
 RULESETS:
     Rulesets are named using the following format:
-    Survival / Birth / States / Neighboorhood
+    Survival / Birth / States / Neighborhood
     
     For example, Conway's Game of Life has the following ruleset:
     [2, 3] / [3] / 2 / M
@@ -42,7 +42,7 @@ BIRTH:
     Birth means a cell that is dead (deactive) will be born (activate) in the next generation if it satisfies the neighborhood conditions
     A cell is considered a neighbor if it is within the specified neighborhood and in the alive (active) state
     
-    A cell is born if it has exactly x neighboors
+    A cell is born if it has exactly x neighbors
 
 
 STATES:
@@ -65,7 +65,7 @@ STATES:
 NEIGHBORHOOD:
     The neighborhood of a cell is defined according to the type of neighborhood it is given
     There are two main neighborhoods:
-        Moore Neighboorhood (M): All 8 cells surrounding the central cell both diagonally and orthogonally
+        Moore Neighborhood (M): All 8 cells surrounding the central cell both diagonally and orthogonally
             Domain: {1,2,3,4,5,6,7,8}
         Von Neumann Neighborhood (VN): Only the 4 cells surrounding the central cell orthogonally
             Domain: {1,2,3,4}
@@ -75,29 +75,38 @@ NOTE:
 
 REFERENCES:
 www.mirekw.com/ca/index.html
+https://www.youtube.com/watch?v=GKe1aGQlKDY&list=PLryDJVmh-ww1OZnkZkzlaewDrhHy2Rli2&index=1
 '''
 
 # imports
 from rulesets import *
 from neighborhood import *
-from Tkinter import *
-from random import *
+
 from time import *
 from cell import *
+from game_window import *
 
+import pygame
 
 # main method
 def main():
+    # import globals
+    global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, RULESET, ATTRIBUTES
     
-    SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, RULESET = random_ruleset()
+    # initialize pygame
+    pygame.init()
     
+    # create fullscreen window
+    world()
+
+    # SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, RULESET = random_ruleset()
+    SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, RULESET = conway()
+
     print SURVIVAL
     print BIRTH
     print STATES
     print NEIGHBORHOOD
     print RULESET
-    
-    world()
 
 
 '''
@@ -106,9 +115,9 @@ RULES
 
 # user chooses which ruleset will be used
 def rules():
-    user = 1  # user determined ruleset
+    user_choice = 1  # user determined ruleset
     
-    if user == 1:
+    if user_choice == 1:
         conway()
 
 
@@ -116,55 +125,85 @@ def rules():
 GUI
 '''
 
-# user defines seed
+# creates game window and grid of cells
+def world():
+    # import globals
+    global RUNNING
+    
+    # create fullscreen window
+    window = pygame.display.set_mode( (0, 0), pygame.FULLSCREEN)
+    life_window = game_window(window, 0, 200, ATTRIBUTES)
+    
+    # set window title
+    pygame.display.set_caption("Game of Life")
+    
+    while RUNNING:
+        end_program()
+        display(window, life_window)
+        update(life_window)
+        pygame.display.update()
+    pygame.quit()
+
+
+# displays the windows
+def display(window, life_window):
+    # set RGB color for background
+    window.fill( (200, 200, 200) )
+    game_window.display(life_window)
+
+
+# updates the game_window
+def update(life_window):
+    # update game_window
+    game_window.update(life_window)
+
+
+# determines when the program ends
+def end_program():
+    # import globals
+    global RUNNING
+    
+    # determines if the program should end
+    for event in pygame.event.get():
+        # program will end if the window is closed
+        if event.type == pygame.QUIT:
+            RUNNING = False
+        
+        # program will end if the ESC key is pressed
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                RUNNING = False
+
+# defines seed
 def seed():
     print "This is the seed function"
-
-
-# randomly fills the world with alive and dead cells
-def seed_random():
-    print "This is the random seed"
-
-
-'''
-Tkinter Colors:
-http://www.science.smith.edu/dftwiki/index.php/Color_Charts_for_TKinter
-'''
-# creates grid
-def world():
-    # create window
-    window = Tk()
     
-    # rows and columns for grid
-    cols = 80
-    rows = 40
-    
-    # create 2D list of cell objects, passing appropriate parameters
-    grid_list = [cell(SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, RULESET, window) for i in range(cols) for j in range(rows)]
-    
-    # create grid
-    for i in range(rows):
-        for j in range(cols):
-            grid_list[i][j].grid(row=i, col=j)
-    
-    # display window
-    window.mainloop()
+    # randomly fills the world with alive and dead cells
+    # TODO: create seed that randomly fills the grid with alive and dead cells
 
-
-'''
-MAIN
-'''
 
 if __name__ == "__main__":
     
     # global variables
+    
+    # cell attributes
     SURVIVAL = []
     BIRTH = []
     STATES = []
     NEIGHBORHOOD = "Neighborhood"
     RULESET = "Survival / Birth / States / Neighborhood"
     
+    # place all cell attributes into a list
+    ATTRIBUTES = [SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, RULESET]
+    
+    # indicates the number of generations
     GENERATION = 0
+    
+    # indicates how fast the generations progress
     SPEED = 0
     
+    # indicates if the program is currently running
+    RUNNING = True
+    
+    # call main method
     main()

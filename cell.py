@@ -21,7 +21,7 @@ BIRTH:
     Birth means a cell that is dead (deactive) will be born (activate) in the next generation if it satisfies the neighborhood conditions
     A cell is considered a neighbor if it is within the specified neighborhood and in the alive (active) state
     
-    A cell is born if it has exactly x neighboors
+    A cell is born if it has exactly x neighbors
 
 
 STATES:
@@ -44,7 +44,7 @@ STATES:
 NEIGHBORHOOD:
     The neighborhood of a cell is defined according to the type of neighborhood it is given
     There are two main neighborhoods:
-        Moore Neighboorhood (M): All 8 cells surrounding the central cell both diagonally and orthogonally
+        Moore Neighborhood (M): All 8 cells surrounding the central cell both diagonally and orthogonally
             Domain: {1,2,3,4,5,6,7,8}
         Von Neumann Neighborhood (VN): Only the 4 cells surrounding the central cell orthogonally
             Domain: {1,2,3,4}
@@ -54,13 +54,9 @@ NOTE:
 '''
 
 # imports
-import Tkinter
-from rulesets import *
-from neighborhood import *
+import pygame
 
-# TODO : Try using Tkinter grids to make matrix of cells
-
-class cell(object):
+class cell():
     # global variables
     SURVIVAL = []
     BIRTH = []
@@ -69,20 +65,49 @@ class cell(object):
     RULESET = "Survival / Birth / States / Neighborhood"
     NEIGHBORS = 0
     
-    
-    def __init__(self, SURVIVAL_PARAM, BIRTH_PARAM, STATES_PARAM, NEIGHBORHOOD_PARAM, RULESET_PARAM, WINDOW):
-        # call parent constructor
-        
+    # constructor
+    def __init__(self, surface, x_pos, y_pos, ATTRIBUTES):
         # import globals
         global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, RULESET
         
-        SURVIVAL = SURVIVAL_PARAM
-        BIRTH = BIRTH_PARAM
-        STATES = STATES_PARAM
-        NEIGHBORHOOD = NEIGHBORHOOD_PARAM
-        RULESET = RULESET_PARAM
+        SURVIVAL = ATTRIBUTES[0]
+        BIRTH = ATTRIBUTES[1]
+        STATES = ATTRIBUTES[2]
+        NEIGHBORHOOD = ATTRIBUTES[3]
+        RULESET = ATTRIBUTES[4]
         
-        self.Label(WINDOW, width="2", height="1", bg="blue")
+        # initialize surface
+        self.surface = surface
+        
+        # set x and y positions of cell in the grid
+        self.x_pos = x_pos
+        self.y_pos = y_pos
+        
+        # set scaling variable
+        scale = 30
+        
+        # sets scaling of grid
+        self.image = pygame.Surface( (scale, scale) )
+        self.rect = self.image.get_rect()
+    
+    
+    # displays the cell
+    def display(self):
+        # set RGB color for borders on grid
+        self.image.fill( (0, 0, 0) )
+        
+        # second parameter: sets RGB color for background of grid
+        # third parameter: (right_border_width, bottom_border_width, col_border_width, row_border_width)
+        pygame.draw.rect(self.image, (255, 255, 255), (2, 2, 30, 30) )
+        
+        
+        self.surface.blit(self.image, (self.x_pos*30, self.y_pos*30) )
+    
+    
+    # updates the cell
+    def update(self):
+        # set top left corner as reference
+        self.rect.topleft = (self.x_pos*30, self.y_pos*30)
     
     
     # updates number of neighbors

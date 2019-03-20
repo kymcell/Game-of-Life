@@ -13,7 +13,7 @@
 NEIGHBORHOOD:
     The neighborhood of a cell is defined according to the type of neighborhood it is given
     There are two main neighborhoods:
-        Moore Neighboorhood (M): All 8 cells surrounding the central cell both diagonally and orthogonally
+        Moore Neighborhood (M): All 8 cells surrounding the central cell both diagonally and orthogonally
             Domain: {1,2,3,4,5,6,7,8}
         Von Neumann Neighborhood (VN): Only the 4 cells surrounding the central cell orthogonally
             Domain: {1,2,3,4}

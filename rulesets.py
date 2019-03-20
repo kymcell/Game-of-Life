@@ -106,6 +106,7 @@ def random_ruleset():
     return SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, RULESET
 
 
+# TODO: User choices must be passed as parameters to the custom function
 # user defines all values for Survival / Birth / States / Neighboorhood
 def custom():
     # user must define Neighborhood first to decide domain of Survival and Birth
