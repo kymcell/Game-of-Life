@@ -65,10 +65,12 @@ class cell():
     RULESET = "Survival / Birth / States / Neighborhood"
     NEIGHBORS = 0
     
+    SCALE = 0
+    
     # constructor
-    def __init__(self, surface, x_pos, y_pos, ATTRIBUTES):
+    def __init__(self, surface, x_pos, y_pos, cell_width, ATTRIBUTES):
         # import globals
-        global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, RULESET
+        global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, RULESET, SCALE
         
         SURVIVAL = ATTRIBUTES[0]
         BIRTH = ATTRIBUTES[1]
@@ -84,30 +86,35 @@ class cell():
         self.y_pos = y_pos
         
         # set scaling variable
-        scale = 30
+        SCALE = cell_width
         
         # sets scaling of grid
-        self.image = pygame.Surface( (scale, scale) )
+        self.image = pygame.Surface( (SCALE, SCALE) )
         self.rect = self.image.get_rect()
     
     
     # displays the cell
     def display(self):
+        # import globals
+        global SCALE
+        
         # set RGB color for borders on grid
         self.image.fill( (0, 0, 0) )
         
         # second parameter: sets RGB color for background of grid
         # third parameter: (right_border_width, bottom_border_width, col_border_width, row_border_width)
-        pygame.draw.rect(self.image, (255, 255, 255), (2, 2, 30, 30) )
+        pygame.draw.rect(self.image, (255, 255, 255), (2, 2, SCALE, SCALE) )
         
-        
-        self.surface.blit(self.image, (self.x_pos*30, self.y_pos*30) )
+        self.surface.blit(self.image, (self.x_pos*SCALE, self.y_pos*SCALE) )
     
     
     # updates the cell
     def update(self):
+        # import globals
+        global SCALE
+        
         # set top left corner as reference
-        self.rect.topleft = (self.x_pos*30, self.y_pos*30)
+        self.rect.topleft = (self.x_pos*SCALE, self.y_pos*SCALE)
     
     
     # updates number of neighbors

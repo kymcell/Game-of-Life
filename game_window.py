@@ -45,10 +45,13 @@ class game_window():
         
         # set rows and columns
         rows = 20
-        cols = 20
+        cols = 40
+        
+        # get cell_width
+        cell_width = self.width / cols
         
         # create grid of cell objects
-        self.grid = [ [cell(self.image, i, j, ATTRIBUTES) for i in range(cols) ] for j in range(rows) ]
+        self.grid = [ [cell(self.image, i, j, cell_width, ATTRIBUTES) for i in range(cols) ] for j in range(rows) ]
     
     
     def display(self):
