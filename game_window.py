@@ -44,8 +44,8 @@ class game_window():
         self.rect = self.image.get_rect()
         
         # set rows and columns
-        rows = 20
-        cols = 40
+        cols = 48
+        rows = cols * self.height / self.width
         
         # get cell_width
         cell_width = self.width / cols
@@ -56,7 +56,7 @@ class game_window():
     
     def display(self):
         # set RGB color for background
-        self.image.fill( (150, 120, 100) )
+        self.image.fill( (0, 0, 0) )
         
         # call cell display
         for row in self.grid:

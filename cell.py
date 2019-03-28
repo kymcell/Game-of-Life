@@ -103,7 +103,7 @@ class cell():
         
         # second parameter: sets RGB color for background of grid
         # third parameter: (right_border_width, bottom_border_width, col_border_width, row_border_width)
-        pygame.draw.rect(self.image, (255, 255, 255), (2, 2, SCALE, SCALE) )
+        pygame.draw.rect(self.image, (255, 255, 255), (1, 1, SCALE, SCALE) )
         
         self.surface.blit(self.image, (self.x_pos*SCALE, self.y_pos*SCALE) )
     
