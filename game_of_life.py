@@ -170,14 +170,23 @@ def user_input(life_window):
         if event.type == pygame.QUIT:
             RUNNING = False
         
-        # detects when the mouse button is clicked
-        if event.type == pygame.MOUSEBUTTONDOWN:
+        # detects when the left mouse button is clicked
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             # gets the current mouse position
             mouse_position = pygame.mouse.get_pos()
             
             # determines when the cell should be activated once clicked
             if mouse_in_grid(mouse_position):
                 game_window.activate_cell(life_window, mouse_position)
+        
+        # detects when the right mouse button is clicked
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
+            # gets the current mouse position
+            mouse_position = pygame.mouse.get_pos()
+            
+            # determines when the cell should be killed once clicked
+            if mouse_in_grid(mouse_position):
+                game_window.kill_cell(life_window, mouse_position)
         
         # program will end if the ESC key is pressed
         elif event.type == pygame.KEYDOWN:

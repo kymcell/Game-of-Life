@@ -78,7 +78,7 @@ class game_window():
             for cell in row:
                 cell.update()
     
-    # activates the current cell when it is clicked on
+    # activates the current cell when it is left-clicked
     def activate_cell(self, mouse_position):
         # stores x, y position of mouse pointer
         grid_position = [mouse_position[0], mouse_position[1]]
@@ -91,3 +91,18 @@ class game_window():
         
         # changes cell to be alive
         self.grid[grid_position[1]][grid_position[0]].contents = 1
+
+
+    # kills the current cell when it is right-clicked
+    def kill_cell(self, mouse_position):
+        # stores x, y position of mouse pointer
+        grid_position = [mouse_position[0], mouse_position[1]]
+    
+        # determines column in grid
+        grid_position[0] = grid_position[0] / self.cell_width
+    
+        # determines row in grid
+        grid_position[1] = (grid_position[1] - 200) / self.cell_width
+    
+        # changes cell to be alive
+        self.grid[grid_position[1]][grid_position[0]].contents = 0
