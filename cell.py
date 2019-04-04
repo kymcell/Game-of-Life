@@ -67,16 +67,16 @@ class cell():
     
     SCALE = 0
     
-    # constructor
     def __init__(self, surface, x_pos, y_pos, cell_width, ATTRIBUTES):
         # import globals
-        global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, RULESET, SCALE
+        global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, RULESET, CONTENTS, SCALE
         
         SURVIVAL = ATTRIBUTES[0]
         BIRTH = ATTRIBUTES[1]
         STATES = ATTRIBUTES[2]
         NEIGHBORHOOD = ATTRIBUTES[3]
         RULESET = ATTRIBUTES[4]
+        self.contents = 0
         
         # initialize surface
         self.surface = surface
@@ -98,12 +98,18 @@ class cell():
         # import globals
         global SCALE
         
-        # set RGB color for borders on grid
-        self.image.fill( (0, 0, 0) )
+        # if the cell is alive, fill the cell
+        if self.contents == 1:
+            self.image.fill( (0, 0, 0) )
         
-        # second parameter: sets RGB color for background of grid
-        # third parameter: (right_border_width, bottom_border_width, col_border_width, row_border_width)
-        pygame.draw.rect(self.image, (255, 255, 255), (1, 1, SCALE, SCALE) )
+        # if the cell is not alive, draw border around cell
+        else:
+            # set RGB color for borders on grid
+            self.image.fill( (0, 0, 0) )
+            
+            # second parameter: sets RGB color for background of grid
+            # third parameter: (right_border_width, bottom_border_width, col_border_width, row_border_width)
+            pygame.draw.rect(self.image, (255, 255, 255), (1, 1, SCALE, SCALE) )
         
         self.surface.blit(self.image, (self.x_pos*SCALE, self.y_pos*SCALE) )
     

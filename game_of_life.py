@@ -102,17 +102,17 @@ def main():
     # SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, RULESET = random_ruleset()
     SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, RULESET = conway()
 
-    print SURVIVAL
-    print BIRTH
-    print STATES
-    print NEIGHBORHOOD
-    print RULESET
+    print( SURVIVAL )
+    print( BIRTH )
+    print( STATES )
+    print( NEIGHBORHOOD )
+    print( RULESET )
 
 
 '''
 RULES
 '''
-
+# TODO : Move this method to wherever the user will select the rules from the dropdown menu
 # user chooses which ruleset will be used
 def rules():
     user_choice = 1  # user determined ruleset
@@ -137,8 +137,9 @@ def world():
     # set window title
     pygame.display.set_caption("Game of Life")
     
+    # while the program is running, continue updating the window
     while RUNNING:
-        end_program()
+        user_input(life_window)
         display(window, life_window)
         update(life_window)
         pygame.display.update()
@@ -158,8 +159,8 @@ def update(life_window):
     game_window.update(life_window)
 
 
-# determines when the program ends
-def end_program():
+# determines when the user clicks the mouse or presses the ESC key to exit the program
+def user_input(life_window):
     # import globals
     global RUNNING
     
@@ -169,14 +170,33 @@ def end_program():
         if event.type == pygame.QUIT:
             RUNNING = False
         
+        # detects when the mouse button is clicked
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            # gets the current mouse position
+            mouse_position = pygame.mouse.get_pos()
+            
+            # determines when the cell should be activated once clicked
+            if mouse_in_grid(mouse_position):
+                game_window.activate_cell(life_window, mouse_position)
+        
         # program will end if the ESC key is pressed
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 RUNNING = False
 
+
+# checks if the mouse is hovering above the grid
+def mouse_in_grid(mouse_position):
+    # returns true if the mouse is hovering above the grid, otherwise false
+    if ( mouse_position[0] >= 0 and mouse_position[0] <= pygame.display.Info().current_w ):
+        if ( mouse_position[1] >= 200 and mouse_position[1] <= pygame.display.Info().current_h ):
+            return True
+    return False
+
+
 # defines seed
 def seed():
-    print "This is the seed function"
+    print("This is the seed function")
     
     # randomly fills the world with alive and dead cells
     # TODO: create seed that randomly fills the grid with alive and dead cells
