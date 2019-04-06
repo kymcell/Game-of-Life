@@ -55,6 +55,7 @@ NOTE:
 
 # imports
 import pygame
+from neighborhood import *
 
 class cell():
     # global variables
@@ -77,6 +78,8 @@ class cell():
         NEIGHBORHOOD = ATTRIBUTES[3]
         RULESET = ATTRIBUTES[4]
         self.contents = 0
+        self.neighbor_positions = []
+        self.neighborhood_domain = []
         
         # initialize surface
         self.surface = surface
@@ -123,12 +126,30 @@ class cell():
         self.rect.topleft = (self.x_pos*SCALE, self.y_pos*SCALE)
     
     
-    # updates number of neighbors
-    def update_neighbors(self):
+    # determines the number of neighbors
+    def find_neighbors(self):
         # import globals
         global NEIGHBORS
         
-        NEIGHBORS += 1
+        # TODO : Edit this and replace with the dropdown menu version
+        # Thoughts on how to implement:
+        # Depending on where menus are implemented, pass these choices through the update functions
+        # and constantly update the user choice.
+        # Need following variables:
+        # user_survival_choice
+        # user_birth_choice
+        # user_states_choice
+        # user_neighborhood_choice
+        
+        user_neighborhood_choice = "Neighborhood"
+        
+        # sets neighbor_positions to the Moore Neighborhood
+        if user_neighborhood_choice == "Moore":
+            self.neighbor_positions, self.neighborhood_domain = moore()
+        
+        # sets neighbor_positions to the Von Neumann Neighborhood
+        if user_neighborhood_choice == "Von Neumann":
+            self.neighbor_positions, self.neighborhood_domain = neumann()
     
     
     # advances the state of the cell

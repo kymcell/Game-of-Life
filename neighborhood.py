@@ -22,11 +22,23 @@ NOTE:
     A domain of 0 is allowed for the Survival value, this means that a living cell will always die in the next generation
 '''
 
-# Moore Neighborhood
+# defines the Moore Neighborhood
 def moore():
-    print "This is the Moore Neighborhood"
+    # neighbor positions relative to the current cell centereed at [x, y] of [0, 0]
+    moore_neighbors = [ [0, 1], [0, -1], [1, 0], [1, 1], [1, -1], [-1, 0], [-1, 1], [-1, 1] ]
+    
+    # defines domain available for the number of neighbors in the Moore Neighborhood
+    moore_domain = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+    
+    return moore_neighbors, moore_domain
 
 
-# Von Neumann Neighborhood
+# defines the Von Neumann Neighborhood
 def neumann():
-    print "This is the Von Neumann Neighborhood"
+    # neighbor positions relative to the current cell centereed at [x, y] of [0, 0]
+    neumann_neighbors = [ [0, 1], [0, -1], [1, 0], [-1, 0] ]
+
+    # defines domain available for the number of neighbors in the Von Neumann Neighborhood
+    neumann_domain = [0, 1, 2, 3, 4]
+    
+    return neumann_neighbors, neumann_domain
