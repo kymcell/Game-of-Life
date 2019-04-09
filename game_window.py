@@ -52,6 +52,11 @@ class game_window():
         
         # create grid of cell objects
         self.grid = [ [cell(self.image, i, j, self.cell_width, ATTRIBUTES) for i in range(cols) ] for j in range(rows) ]
+        
+        # determine neighbors for all cells
+        for row in self.grid:
+            for cells in row:
+                cells.find_neighbors(self.grid)
     
     
     # displays the window and cells

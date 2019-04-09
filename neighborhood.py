@@ -25,20 +25,14 @@ NOTE:
 # defines the Moore Neighborhood
 def moore():
     # neighbor positions relative to the current cell centereed at [x, y] of [0, 0]
-    moore_neighbors = [ [0, 1], [0, -1], [1, 0], [1, 1], [1, -1], [-1, 0], [-1, 1], [-1, 1] ]
+    moore_neighbors = [ [0, 1], [0, -1], [1, 0], [1, 1], [1, -1], [-1, 0], [-1, 1], [-1, -1] ]
     
-    # defines domain available for the number of neighbors in the Moore Neighborhood
-    moore_domain = [0, 1, 2, 3, 4, 5, 6, 7, 8]
-    
-    return moore_neighbors, moore_domain
+    return moore_neighbors
 
 
 # defines the Von Neumann Neighborhood
 def neumann():
     # neighbor positions relative to the current cell centereed at [x, y] of [0, 0]
     neumann_neighbors = [ [0, 1], [0, -1], [1, 0], [-1, 0] ]
-
-    # defines domain available for the number of neighbors in the Von Neumann Neighborhood
-    neumann_domain = [0, 1, 2, 3, 4]
     
-    return neumann_neighbors, neumann_domain
+    return neumann_neighbors

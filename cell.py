@@ -64,7 +64,6 @@ class cell():
     STATES = []
     NEIGHBORHOOD = "Neighborhood"
     RULESET = "Survival / Birth / States / Neighborhood"
-    NEIGHBORS = 0
     
     SCALE = 0
     
@@ -79,7 +78,8 @@ class cell():
         RULESET = ATTRIBUTES[4]
         self.contents = 0
         self.neighbor_positions = []
-        self.neighborhood_domain = []
+        self.neighbors = []
+        self.alive_neighbors = 0
         
         # initialize surface
         self.surface = surface
@@ -99,7 +99,7 @@ class cell():
     # displays the cell
     def display(self):
         # import globals
-        global SCALE
+        global STATES, SCALE
         
         # if the cell is alive, fill the cell
         if self.contents == 1:
@@ -124,13 +124,19 @@ class cell():
         
         # set top left corner as reference
         self.rect.topleft = (self.x_pos*SCALE, self.y_pos*SCALE)
+        
+        # reset number of alive neighbors
+        self.alive_neighbors = 0
+        
+        # count up number of alive neighbors
+        for cells in self.neighbors:
+            if cells.contents == 1:
+                self.alive_neighbors += 1
+                print self.alive_neighbors
     
     
     # determines the number of neighbors
-    def find_neighbors(self):
-        # import globals
-        global NEIGHBORS
-        
+    def find_neighbors(self, grid):
         # TODO : Edit this and replace with the dropdown menu version
         # Thoughts on how to implement:
         # Depending on where menus are implemented, pass these choices through the update functions
@@ -140,16 +146,32 @@ class cell():
         # user_birth_choice
         # user_states_choice
         # user_neighborhood_choice
-        
-        user_neighborhood_choice = "Neighborhood"
+        user_neighborhood_choice = "Moore"
         
         # sets neighbor_positions to the Moore Neighborhood
         if user_neighborhood_choice == "Moore":
-            self.neighbor_positions, self.neighborhood_domain = moore()
+            self.neighbor_positions = moore()
         
         # sets neighbor_positions to the Von Neumann Neighborhood
         if user_neighborhood_choice == "Von Neumann":
-            self.neighbor_positions, self.neighborhood_domain = neumann()
+            self.neighbor_positions = neumann()
+        
+        # determine positions of neighbors
+        for neighbor in self.neighbor_positions:
+            neighbor[0] += self.x_pos
+            neighbor[1] += self.y_pos
+        
+        # fixes cells from bleeding over from the right side of the screen to the left side
+        for neighbor in self.neighbor_positions:
+            if neighbor[0] < 0:
+                neighbor[0] -= 1
+        
+        # add neighbors to neighbor list
+        for neighbor in self.neighbor_positions:
+            try:
+                self.neighbors.append(grid[neighbor[1]][neighbor[0]])
+            except:
+                pass
     
     
     # advances the state of the cell
