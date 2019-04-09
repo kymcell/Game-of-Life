@@ -132,7 +132,6 @@ class cell():
         for cells in self.neighbors:
             if cells.contents == 1:
                 self.alive_neighbors += 1
-                print self.alive_neighbors
     
     
     # determines the number of neighbors
