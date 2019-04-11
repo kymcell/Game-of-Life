@@ -16,7 +16,6 @@ WORLD:
 '''
 
 # imports
-import pygame
 from cell import *
 
 class game_window():
@@ -25,16 +24,20 @@ class game_window():
         # iniitialize screen
         self.screen = screen
         
+        # initialize offsets
+        self.x_offset = x_offset
+        self.y_offset = y_offset
+        
         # position game_window
         vector = pygame.math.Vector2
-        self.pos = vector(x_offset, y_offset)
+        self.pos = vector(self.x_offset, self.y_offset)
         
         # get screen resolution
         resolution = pygame.display.Info()
         
         # set width and height
         self.width = resolution.current_w
-        self.height = resolution.current_h - y_offset
+        self.height = resolution.current_h - self.y_offset
         
         # set surface where the grid will be placed and the game of life will be played
         self.image = pygame.Surface( (self.width, self.height) )
@@ -92,7 +95,7 @@ class game_window():
         grid_position[0] = grid_position[0] / self.cell_width
         
         # determines row in grid
-        grid_position[1] = ( grid_position[1] - 200 ) / self.cell_width
+        grid_position[1] = ( grid_position[1] - self.y_offset ) / self.cell_width
         
         # changes cell to be alive
         self.grid[grid_position[1]][grid_position[0]].contents = 1
@@ -107,7 +110,7 @@ class game_window():
         grid_position[0] = grid_position[0] / self.cell_width
     
         # determines row in grid
-        grid_position[1] = (grid_position[1] - 200) / self.cell_width
+        grid_position[1] = (grid_position[1] - self.y_offset) / self.cell_width
     
         # changes cell to be alive
         self.grid[grid_position[1]][grid_position[0]].contents = 0

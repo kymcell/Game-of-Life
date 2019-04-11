@@ -80,19 +80,23 @@ REFERENCES:
     Game of Life Tutorial:
     https://www.youtube.com/watch?v=GKe1aGQlKDY&list=PLryDJVmh-ww1OZnkZkzlaewDrhHy2Rli2&index=1
 
-    Thorpy Pygame GUI Information:
+    Thorpy GUI Information:
     http://www.thorpy.org/documentation.html
 '''
 
 # imports
-from rulesets import *
-from neighborhood import *
-
+import thorpy
+from random import *
 from time import *
-from cell import *
+
 from game_window import *
 
-import pygame, thorpy
+
+'''
+________________________________________________________________________________________________________________________
+                                                MAIN METHOD
+________________________________________________________________________________________________________________________
+'''
 
 # main method
 def main():
@@ -105,57 +109,78 @@ def main():
     # create fullscreen window
     world()
 
-    # SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, RULESET = random_ruleset()
-    SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, RULESET = conway()
-
-    print( SURVIVAL )
-    print( BIRTH )
-    print( STATES )
-    print( NEIGHBORHOOD )
-    print( RULESET )
-
 
 '''
-RULES
-'''
-# TODO : Move this method to wherever the user will select the rules from the dropdown menu
-# user chooses which ruleset will be used
-def rules():
-    user_choice = 1  # user determined ruleset
-    
-    if user_choice == 1:
-        conway()
-
-
-'''
-GUI
+________________________________________________________________________________________________________________________
+                                        Graphical User Interface (GUI)
+________________________________________________________________________________________________________________________
 '''
 
 # creates game window and grid of cells
 def world():
     # import globals
-    global RUNNING
+    global RUNNING, MENU
+    
+    # set size of the bar containing the buttons on the top of the screen
+    y_offset = 200
     
     # create fullscreen window
-    window = pygame.display.set_mode( (0, 0), pygame.FULLSCREEN)
-    life_window = game_window(window, 0, 200, ATTRIBUTES)
+    window = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+    
+    # set RGB color for background
+    window.fill((200, 200, 200))
+    
+    # create window to hold actual game and create the grid
+    life_window = game_window(window, 0, y_offset, ATTRIBUTES)
     
     # set window title
     pygame.display.set_caption("Game of Life")
     
+    # Thorpy GUI Elements
+    # __________________________________________________________________________________________________________________
+    # set theme of all thorpy elements
+    thorpy.set_theme("human")
+    
+    # use the following to make buttons invisible:
+    # button_var.set_visible(False)
+    
+    # button for selecting which ruleset to use
+    ruleset_button = thorpy.make_button("Ruleset", func=rules)
+    
+    # creates box to hold elements
+    box = thorpy.Box(elements=[ruleset_button])
+    
+    # set the box to fit the elements
+    box.fit_children(margins=(30, 30))
+    
+    # set box color and opacity
+    box.set_main_color((220, 220, 220, 100))
+    
+    # set the menu
+    MENU = thorpy.Menu(box)
+    thorpy.functions.set_current_menu(MENU)
+    
+    # set the surface to be used
+    for element in MENU.get_population():
+        element.surface = window
+    
+    # set the position of the box
+    box.set_topleft((100, 0))
+    box.blit()
+    box.update()
+    # __________________________________________________________________________________________________________________
+    
     # while the program is running, continue updating the window
     while RUNNING:
-        user_input(life_window)
-        display(window, life_window)
+        user_input(life_window, y_offset)
+        display(life_window)
         update(life_window)
         pygame.display.update()
     pygame.quit()
 
 
-# displays the windows
-def display(window, life_window):
-    # set RGB color for background
-    window.fill( (200, 200, 200) )
+# displays the window
+def display(life_window):
     game_window.display(life_window)
 
 
@@ -166,12 +191,15 @@ def update(life_window):
 
 
 # determines when the user clicks the mouse or presses the ESC key to exit the program
-def user_input(life_window):
+def user_input(life_window, y_offset):
     # import globals
     global RUNNING
     
     # determines if the program should end
     for event in pygame.event.get():
+        # thorpy elements will react to events
+        MENU.react(event)
+        
         # program will end if the window is closed
         if event.type == pygame.QUIT:
             RUNNING = False
@@ -182,7 +210,7 @@ def user_input(life_window):
             mouse_position = pygame.mouse.get_pos()
             
             # determines when the cell should be activated once clicked
-            if mouse_in_grid(mouse_position):
+            if mouse_in_grid(mouse_position, y_offset):
                 game_window.activate_cell(life_window, mouse_position)
         
         # detects when the right mouse button is clicked
@@ -191,7 +219,7 @@ def user_input(life_window):
             mouse_position = pygame.mouse.get_pos()
             
             # determines when the cell should be killed once clicked
-            if mouse_in_grid(mouse_position):
+            if mouse_in_grid(mouse_position, y_offset):
                 game_window.kill_cell(life_window, mouse_position)
         
         # program will end if the ESC key is pressed
@@ -201,25 +229,172 @@ def user_input(life_window):
 
 
 # checks if the mouse is hovering above the grid
-def mouse_in_grid(mouse_position):
+def mouse_in_grid(mouse_position, y_offset):
     # returns true if the mouse is hovering above the grid, otherwise false
-    if ( mouse_position[0] >= 0 and mouse_position[0] <= pygame.display.Info().current_w ):
-        if ( mouse_position[1] >= 200 and mouse_position[1] <= pygame.display.Info().current_h ):
+    if (mouse_position[0] >= 0 and mouse_position[0] <= pygame.display.Info().current_w):
+        if (mouse_position[1] >= y_offset and mouse_position[1] <= pygame.display.Info().current_h):
             return True
     return False
 
 
-# defines seed
-def seed():
-    print("This is the seed function")
-    
-    # randomly fills the world with alive and dead cells
-    # TODO: create seed that randomly fills the grid with alive and dead cells
+'''
+________________________________________________________________________________________________________________________
+                                                    RULESETS
+________________________________________________________________________________________________________________________
+'''
 
+# user chooses which ruleset will be used
+def rules():
+    # list of choices
+    choices = [("Conway's Game of Life", conway),
+               ("Brian's Brain", brian),
+               ("Random", random_ruleset),
+               ("Custom", custom),
+               ("Cancel", None)]
+    
+    # launches choice window
+    thorpy.launch_blocking_choices("Blocking choices box!\n", choices)
+    
+    # print ruleset to console for debugging
+    print
+    print(NAME)
+    print("Survival: " + str(SURVIVAL))
+    print("Birth: " + str(BIRTH))
+    print("States: " + str(STATES))
+    print("Neighborhood: " + str(NEIGHBORHOOD))
+    print("Ruleset: " + str(RULESET))
+    print
+
+
+# Conway's Game of Life Ruleset: [2, 3] / [3] / 2 / M
+def conway():
+    # import globals
+    global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, RULESET, ATTRIBUTES, NAME
+    
+    # set name
+    NAME = "Conway's Game of Life"
+    
+    # define rules
+    SURVIVAL = [2, 3]
+    BIRTH = [3]
+    STATES = range(2)
+    NEIGHBORHOOD = "M"
+    RULESET = (str(SURVIVAL) + " / " + str(BIRTH) + " / " + str(len(STATES)) + " / " + NEIGHBORHOOD)
+
+
+# Brian's Brain Ruleset: [0] / [2] / 3 / M
+def brian():
+    # import globals
+    global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, RULESET, ATTRIBUTES, NAME
+    
+    # set name
+    NAME = "Brian's Brain"
+    
+    # define rules
+    SURVIVAL = [0]
+    BIRTH = [2]
+    STATES = range(3)
+    NEIGHBORHOOD = "M"
+    RULESET = (str(SURVIVAL) + " / " + str(BIRTH) + " / " + str(len(STATES)) + " / " + NEIGHBORHOOD)
+
+
+# generates random values for Survival / Birth / States / Neighboorhood
+def random_ruleset():
+    # import globals
+    global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, RULESET, ATTRIBUTES, NAME
+    
+    # set name
+    NAME = "Random Ruleset"
+    
+    # randomly pick the neighborhood
+    option = randint(0, 1)
+    if (option == 0):
+        NEIGHBORHOOD = "M"
+    if (option == 1):
+        NEIGHBORHOOD = "VN"
+    
+    # randomly pick SURVIVAL values
+    if (NEIGHBORHOOD == "M"):
+        upper_bound = 8
+    if (NEIGHBORHOOD == "VN"):
+        upper_bound = 4
+    num_survival = randint(1, upper_bound)
+    i = 0
+    neighbors = randint(0, upper_bound)
+    if (neighbors == 0):
+        SURVIVAL.append(neighbors)
+        i = num_survival
+    while (i < num_survival):
+        neighbors = randint(1, upper_bound)
+        if (neighbors not in SURVIVAL):
+            SURVIVAL.append(neighbors)
+            i += 1
+    
+    # randomly pick BIRTH values
+    if (NEIGHBORHOOD == "M"):
+        upper_bound = 8
+    if (NEIGHBORHOOD == "VN"):
+        upper_bound = 4
+    num_birth = randint(1, upper_bound)
+    i = 0
+    while (i < num_birth):
+        neighbors = randint(1, upper_bound)
+        if (neighbors not in BIRTH):
+            BIRTH.append(neighbors)
+            i += 1
+    
+    # randomly pick STATES values
+    STATES = range(randint(2, 10))
+    
+    # generate RULESET
+    RULESET = (str(SURVIVAL) + " / " + str(BIRTH) + " / " + str(len(STATES)) + " / " + NEIGHBORHOOD)
+
+
+# TODO: User choices must be passed as parameters to the custom function
+# user defines all values for Survival / Birth / States / Neighboorhood
+def custom():
+    # import globals
+    global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, RULESET, ATTRIBUTES, NAME
+    
+    # user must define Neighborhood first to decide domain of Survival and Birth
+    # code for user input
+    # set name
+    NAME = "Custom Ruleset"
+    
+    # set cell attributes
+    SURVIVAL = []
+    BIRTH = []
+    STATES = []
+    NEIGHBORHOOD = "Neighborhood"
+    RULESET = (str(SURVIVAL) + " / " + str(BIRTH) + " / " + str(len(STATES)) + " / " + NEIGHBORHOOD)
+
+
+'''
+________________________________________________________________________________________________________________________
+                                            SEEDS (Starting Patterns)
+________________________________________________________________________________________________________________________
+'''
+
+# user chooses which seed will be used
+def seed():
+    pass
+
+# randomly fills the world with alive and dead cells
+# TODO: create seed that randomly fills the grid with alive and dead cells
+
+
+'''
+________________________________________________________________________________________________________________________
+                                                START OF PROGRAM
+________________________________________________________________________________________________________________________
+'''
 
 if __name__ == "__main__":
     
     # global variables
+    
+    # name of ruleset
+    NAME = "Name"
     
     # cell attributes
     SURVIVAL = []
@@ -239,6 +414,9 @@ if __name__ == "__main__":
     
     # indicates if the program is currently running
     RUNNING = True
+    
+    # menu to be called from thorpy functions
+    MENU = None
     
     # call main method
     main()
