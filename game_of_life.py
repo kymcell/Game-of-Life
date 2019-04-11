@@ -74,10 +74,14 @@ NOTE:
     A domain of 0 is allowed for the Survival value, this means that a living cell will always die in the next generation
 
 REFERENCES:
-www.mirekw.com/ca/index.html
-https://www.youtube.com/watch?v=GKe1aGQlKDY&list=PLryDJVmh-ww1OZnkZkzlaewDrhHy2Rli2&index=1
-https://program.sambull.org/sgc/
-https://launchpad.net/simplegc
+    Cellular Automata Information:
+    www.mirekw.com/ca/index.html
+
+    Game of Life Tutorial:
+    https://www.youtube.com/watch?v=GKe1aGQlKDY&list=PLryDJVmh-ww1OZnkZkzlaewDrhHy2Rli2&index=1
+
+    Thorpy Pygame GUI Information:
+    http://www.thorpy.org/documentation.html
 '''
 
 # imports
@@ -88,7 +92,7 @@ from time import *
 from cell import *
 from game_window import *
 
-import pygame
+import pygame, thorpy
 
 # main method
 def main():
