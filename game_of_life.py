@@ -143,27 +143,55 @@ def world():
     
     # use the following to make buttons invisible:
     # button_var.set_visible(False)
-    
+
     # button for selecting which ruleset to use
     ruleset_button = thorpy.make_button("Ruleset", func=rules)
     
-    # creates box to hold elements
-    box = thorpy.Box(elements=[ruleset_button])
+    # button for selecting survival value
+    survival_button = thorpy.make_button("Survival")
     
+    # button for selecting birth value
+    birth_button = thorpy.make_button("Birth")
+    
+    # button for selecting the number of states each cell has
+    states_button = thorpy.make_button("States")
+    
+    # button for selecting which neighborhood the cells will use
+    neighborhood_button = thorpy.make_button("Neighborhood")
+    
+    # button for selecting how fast the generations will iterate
+    speed_button = thorpy.make_button("Speed")
+    
+    # button for starting and stopping the generations from iterating
+    start_button = thorpy.make_button("Play/Pause")
+    
+    # button for clearing the grid (kills all cells)
+    reset_button = thorpy.make_button("Reset")
+
+    # creates box to hold elements
+    box = thorpy.Box(elements=[ruleset_button,
+                               survival_button,
+                               birth_button,
+                               states_button,
+                               neighborhood_button,
+                               speed_button,
+                               start_button,
+                               reset_button])
+
     # set the box to fit the elements
     box.fit_children(margins=(30, 30))
-    
+
     # set box color and opacity
     box.set_main_color((220, 220, 220, 100))
-    
+
     # set the menu
     MENU = thorpy.Menu(box)
     thorpy.functions.set_current_menu(MENU)
-    
+
     # set the surface to be used
     for element in MENU.get_population():
         element.surface = window
-    
+
     # set the position of the box
     box.set_topleft((100, 0))
     box.blit()
