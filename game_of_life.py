@@ -143,7 +143,7 @@ def world():
     
     # use the following to make buttons invisible:
     # button_var.set_visible(False)
-
+    
     # button for selecting which ruleset to use
     ruleset_button = thorpy.make_button("Ruleset", func=rules)
     
@@ -167,20 +167,23 @@ def world():
     
     # button for clearing the grid (kills all cells)
     reset_button = thorpy.make_button("Reset")
-
+    
+    # set the current application
+    thorpy.application._CURRENT_APPLICATION = game_window
+    
     # creates box to hold elements
-    box = thorpy.Box(elements=[ruleset_button,
+    box = thorpy.BarBox(elements=[ruleset_button,
                                survival_button,
                                birth_button,
                                states_button,
                                neighborhood_button,
                                speed_button,
                                start_button,
-                               reset_button])
+                               reset_button] )
 
     # set the box to fit the elements
     box.fit_children(margins=(30, 30))
-
+    
     # set box color and opacity
     box.set_main_color((220, 220, 220, 100))
 
@@ -191,7 +194,7 @@ def world():
     # set the surface to be used
     for element in MENU.get_population():
         element.surface = window
-
+    
     # set the position of the box
     box.set_topleft((100, 0))
     box.blit()
@@ -276,12 +279,11 @@ def rules():
     # list of choices
     choices = [("Conway's Game of Life", conway),
                ("Brian's Brain", brian),
-               ("Random", random_ruleset),
                ("Custom", custom),
                ("Cancel", None)]
     
     # launches choice window
-    thorpy.launch_blocking_choices("Blocking choices box!\n", choices)
+    thorpy.launch_blocking_choices("Select a ruleset to be used:\n", choices)
     
     # print ruleset to console for debugging
     print

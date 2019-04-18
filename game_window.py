@@ -20,6 +20,8 @@ from cell import *
 
 class game_window():
     
+    size = (0, 0)
+    
     def __init__(self, screen, x_offset, y_offset, ATTRIBUTES):
         # iniitialize screen
         self.screen = screen
