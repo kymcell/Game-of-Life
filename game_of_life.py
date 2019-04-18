@@ -141,11 +141,14 @@ def world():
     # set theme of all thorpy elements
     thorpy.set_theme("human")
     
-    # use the following to make buttons invisible:
-    # button_var.set_visible(False)
-    
     # button for selecting which ruleset to use
     ruleset_button = thorpy.make_button("Ruleset", func=rules)
+
+    # button for selecting which seed to use
+    seed_button = thorpy.make_button("Seed")
+    
+    # spacing button that will never be used
+    spacing_button_01 = thorpy.make_button("Space")
     
     # button for selecting survival value
     survival_button = thorpy.make_button("Survival")
@@ -155,12 +158,18 @@ def world():
     
     # button for selecting the number of states each cell has
     states_button = thorpy.make_button("States")
-    
+
     # button for selecting which neighborhood the cells will use
     neighborhood_button = thorpy.make_button("Neighborhood")
+
+    # spacing button that will never be used
+    spacing_button_02 = thorpy.make_button("Space")
     
     # button for selecting how fast the generations will iterate
     speed_button = thorpy.make_button("Speed")
+
+    # button for selecting how large the grid of cells will be
+    size_button = thorpy.make_button("Size")
     
     # button for starting and stopping the generations from iterating
     start_button = thorpy.make_button("Play/Pause")
@@ -168,25 +177,70 @@ def world():
     # button for clearing the grid (kills all cells)
     reset_button = thorpy.make_button("Reset")
     
+    # list to hold buttons that will be hidden
+    hidden_buttons_list = [seed_button,
+                           spacing_button_01,
+                           survival_button,
+                           birth_button,
+                           states_button,
+                           neighborhood_button,
+                           spacing_button_02,]
+    
+    # hide the buttons in the hidden buttons list
+    for button in hidden_buttons_list:
+        button.set_visible(False)
+        button.set_active(False)
+    
     # set the current application
     thorpy.application._CURRENT_APPLICATION = game_window
     
-    # creates box to hold elements
+    # create box to hold elements
     box = thorpy.BarBox(elements=[ruleset_button,
-                               survival_button,
-                               birth_button,
-                               states_button,
-                               neighborhood_button,
-                               speed_button,
-                               start_button,
-                               reset_button] )
+                                  seed_button,
+                                  spacing_button_01,
+                                  survival_button,
+                                  birth_button,
+                                  states_button,
+                                  neighborhood_button,
+                                  spacing_button_02,
+                                  speed_button,
+                                  size_button,
+                                  start_button,
+                                  reset_button] )
 
     # set the box to fit the elements
     box.fit_children(margins=(30, 30))
-    
+
     # set box color and opacity
     box.set_main_color((220, 220, 220, 100))
+    
+    # labels that will display the global variables
+    name_label = thorpy.make_text(NAME)
+    survival_label = thorpy.make_text("Survival: " + str(RULESET))
+    birth_label = thorpy.make_text("Birth: " + str(RULESET))
+    states_label = thorpy.make_text("States: " + str(RULESET))
+    neighborhood_label = thorpy.make_text("Nieghborhood: " + str(RULESET))
+    ruleset_label = thorpy.make_text("Ruleset: " + str(RULESET))
+    
+    # list that holds all the labels
+    label_list = [name_label, survival_label, birth_label, states_label, neighborhood_label, ruleset_label]
+    
+    # create another box that will only display selected information
+    display_box = thorpy.Box(elements=[name_label,
+                                       survival_label,
+                                       birth_label,
+                                       states_label,
+                                       neighborhood_label,
+                                       ruleset_label])
 
+    # set the display box to fit the elements
+    display_box.fit_children(margins=(30, 30))
+    
+    # set the position of the display box
+    display_box.set_topleft((1000, 0))
+    display_box.blit()
+    display_box.update()
+    
     # set the menu
     MENU = thorpy.Menu(box)
     thorpy.functions.set_current_menu(MENU)
@@ -196,7 +250,7 @@ def world():
         element.surface = window
     
     # set the position of the box
-    box.set_topleft((100, 0))
+    box.set_topleft((100, 50))
     box.blit()
     box.update()
     # __________________________________________________________________________________________________________________
@@ -205,7 +259,7 @@ def world():
     while RUNNING:
         user_input(life_window, y_offset)
         display(life_window)
-        update(life_window)
+        update(life_window, display_box, label_list)
         pygame.display.update()
     pygame.quit()
 
@@ -216,7 +270,19 @@ def display(life_window):
 
 
 # updates the game_window
-def update(life_window):
+def update(life_window, display_box, label_list):
+    # update labels
+    label_list[0].set_text(NAME)
+    label_list[1].set_text("Survival: " + str(SURVIVAL))
+    label_list[2].set_text("Birth: " + str(BIRTH))
+    label_list[3].set_text("States: " + str(STATES))
+    label_list[4].set_text("Neighborhood: " + str(NEIGHBORHOOD))
+    label_list[5].set_text("Ruleset: " + str(RULESET))
+    # TODO: Fix label alignment within the display box
+    # update display_box
+    display_box.blit()
+    display_box.update()
+    
     # update game_window
     game_window.update(life_window)
 
@@ -284,16 +350,6 @@ def rules():
     
     # launches choice window
     thorpy.launch_blocking_choices("Select a ruleset to be used:\n", choices)
-    
-    # print ruleset to console for debugging
-    print
-    print(NAME)
-    print("Survival: " + str(SURVIVAL))
-    print("Birth: " + str(BIRTH))
-    print("States: " + str(STATES))
-    print("Neighborhood: " + str(NEIGHBORHOOD))
-    print("Ruleset: " + str(RULESET))
-    print
 
 
 # Conway's Game of Life Ruleset: [2, 3] / [3] / 2 / M
@@ -412,6 +468,17 @@ def seed():
 # randomly fills the world with alive and dead cells
 # TODO: create seed that randomly fills the grid with alive and dead cells
 
+
+'''
+________________________________________________________________________________________________________________________
+                                            OTHER BUTTON FUNCTIONS
+________________________________________________________________________________________________________________________
+'''
+
+# kills all cells
+def reset():
+    # call the game_window function to kill the cells
+    pass
 
 '''
 ________________________________________________________________________________________________________________________
