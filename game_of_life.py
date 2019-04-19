@@ -215,12 +215,12 @@ def world():
     box.set_main_color((220, 220, 220, 100))
     
     # labels that will display the global variables
-    name_label = thorpy.make_text(NAME)
-    survival_label = thorpy.make_text("Survival: " + str(RULESET))
-    birth_label = thorpy.make_text("Birth: " + str(RULESET))
-    states_label = thorpy.make_text("States: " + str(RULESET))
-    neighborhood_label = thorpy.make_text("Nieghborhood: " + str(RULESET))
-    ruleset_label = thorpy.make_text("Ruleset: " + str(RULESET))
+    name_label = thorpy.make_text("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
+    survival_label = thorpy.make_text("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
+    birth_label = thorpy.make_text("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
+    states_label = thorpy.make_text("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
+    neighborhood_label = thorpy.make_text("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
+    ruleset_label = thorpy.make_text("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
     
     # list that holds all the labels
     label_list = [name_label, survival_label, birth_label, states_label, neighborhood_label, ruleset_label]
@@ -278,7 +278,7 @@ def update(life_window, display_box, label_list):
     label_list[3].set_text("States: " + str(STATES))
     label_list[4].set_text("Neighborhood: " + str(NEIGHBORHOOD))
     label_list[5].set_text("Ruleset: " + str(RULESET))
-    # TODO: Fix label alignment within the display box
+    
     # update display_box
     display_box.blit()
     display_box.update()
@@ -451,7 +451,7 @@ def custom():
     SURVIVAL = []
     BIRTH = []
     STATES = []
-    NEIGHBORHOOD = "Neighborhood"
+    NEIGHBORHOOD = "None"
     RULESET = (str(SURVIVAL) + " / " + str(BIRTH) + " / " + str(len(STATES)) + " / " + NEIGHBORHOOD)
 
 
@@ -491,13 +491,13 @@ if __name__ == "__main__":
     # global variables
     
     # name of ruleset
-    NAME = "Name"
+    NAME = "Please select a ruleset."
     
     # cell attributes
     SURVIVAL = []
     BIRTH = []
     STATES = []
-    NEIGHBORHOOD = "Neighborhood"
+    NEIGHBORHOOD = ""
     RULESET = "Survival / Birth / States / Neighborhood"
     
     # place all cell attributes into a list
