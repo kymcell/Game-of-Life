@@ -119,7 +119,7 @@ ________________________________________________________________________________
 # creates game window and grid of cells
 def world():
     # import globals
-    global RUNNING, MENU, life_window
+    global RUNNING, MENU, life_window, survival_button, birth_button, states_button, neighborhood_button
     
     # set size of the bar containing the buttons on the top of the screen
     y_offset = 200
@@ -160,7 +160,7 @@ def world():
     states_button = thorpy.make_button("States")
 
     # button for selecting which neighborhood the cells will use
-    neighborhood_button = thorpy.make_button("Neighborhood")
+    neighborhood_button = thorpy.make_button("Neighborhood", func=neighborhood)
 
     # spacing button that will never be used
     spacing_button_02 = thorpy.make_button("Space")
@@ -446,7 +446,7 @@ def random_ruleset():
 # user defines all values for Survival / Birth / States / Neighboorhood
 def custom():
     # import globals
-    global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, RULESET, ATTRIBUTES, NAME
+    global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, RULESET, ATTRIBUTES, NAME, survival_button, birth_button, states_button, neighborhood_button
     
     # user must define Neighborhood first to decide domain of Survival and Birth
     # code for user input
@@ -459,6 +459,11 @@ def custom():
     STATES = []
     NEIGHBORHOOD = "None"
     RULESET = (str(SURVIVAL) + " / " + str(BIRTH) + " / " + str(len(STATES)) + " / " + NEIGHBORHOOD)
+    
+    # make neighborhood button active
+    neighborhood_button.set_visible(True)
+    neighborhood_button.set_active(True)
+    neighborhood_button.blit()
 
 
 '''
@@ -481,28 +486,84 @@ ________________________________________________________________________________
 ________________________________________________________________________________________________________________________
 '''
 
+# user chooses neighborhood
+def neighborhood():
+    # import globals
+    global neighborhood_selected
+    # TODO: Add functions to neighborhoods
+    # list of choices
+    choices = [("Moore Neighborhood (M)"), ("Von Neumann Neighborhood (VN)")]
 
 # user chooses how large the grid of cells will be
 def size():
     # import globals
     global life_window
-    # TODO: Parameters cannot be passed through button functions, otherwise they all run immediately, fix code below
+    
     # list of choices
-    choices = [("24", life_window.resize(24)),
-               ("30", life_window.resize(30)),
-               ("40", life_window.resize(40)),
-               ("48", life_window.resize(48)),
-               ("60", life_window.resize(60)),
-               ("80", life_window.resize(80)),
-               ("96", life_window.resize(96)),
-               ("120", life_window.resize(120)),
-               ("160", life_window.resize(160)),
-               ("192", life_window.resize(192)),
-               ("240", life_window.resize(240)),
+    choices = [("24", col_24),
+               ("30", col_30),
+               ("40", col_40),
+               ("48", col_48),
+               ("60", col_60),
+               ("80", col_80),
+               ("96", col_96),
+               ("120", col_120),
+               ("160", col_160),
+               ("192", col_192),
+               ("240", col_240),
                ("Cancel", None)]
     
     # launches choice window
     thorpy.launch_blocking_choices("Select a number of columns for the grid:\n", choices)
+
+
+# column functions
+# ______________________________________________________________________________________________________________________
+# resizes the grid to 24 columns
+def col_24():
+    life_window.resize(24)
+
+# resizes the grid to 30 columns
+def col_30():
+    life_window.resize(30)
+    
+# resizes the grid to 40 columns
+def col_40():
+    life_window.resize(40)
+    
+# resizes the grid to 48 columns
+def col_48():
+    life_window.resize(48)
+    
+# resizes the grid to 60 columns
+def col_60():
+    life_window.resize(60)
+    
+# resizes the grid to 80 columns
+def col_80():
+    life_window.resize(80)
+    
+# resizes the grid to 96 columns
+def col_96():
+    life_window.resize(96)
+    
+# resizes the grid to 120 columns
+def col_120():
+    life_window.resize(120)
+    
+# resizes the grid to 160 columns
+def col_160():
+    life_window.resize(160)
+    
+# resizes the grid to 192 columns
+def col_192():
+    life_window.resize(192)
+    
+# resizes the grid to 240 columns
+def col_240():
+    life_window.resize(240)
+
+# ______________________________________________________________________________________________________________________
 
 
 # kills all cells
@@ -551,6 +612,19 @@ if __name__ == "__main__":
     
     # window holding the grid
     life_window = None
+    
+    # global buttons
+    survival_button = None
+    birth_button = None
+    states_button = None
+    neighborhood_button = None
+    
+    # global booleans
+    ruleset_selected = False
+    survival_selected = False
+    birth_selected = False
+    states_selected = False
+    neighborhood_selected = False
     
     # call main method
     main()
