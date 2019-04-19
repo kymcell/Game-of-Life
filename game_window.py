@@ -19,10 +19,14 @@ WORLD:
 from cell import *
 
 class game_window():
-    
+    # class variables
     size = (0, 0)
+    RULES = []
     
     def __init__(self, screen, x_offset, y_offset, ATTRIBUTES):
+        # import globals
+        global RULES
+        
         # iniitialize screen
         self.screen = screen
         
@@ -44,6 +48,9 @@ class game_window():
         # set surface where the grid will be placed and the game of life will be played
         self.image = pygame.Surface( (self.width, self.height) )
         self.rect = self.image.get_rect()
+        
+        # set the rules for the cells
+        RULES = ATTRIBUTES
         
         # set columns, must be one of the following options for 1920x1080 resolution screen:
         # cols = 15, 16, 20, 24, 30, 32, 40, 48, 60, 64, 80, 96, 120, 128, 160, 192, 240, 320, 384
@@ -88,6 +95,26 @@ class game_window():
             for cell in row:
                 cell.update()
     
+    # resizes the grid to the user's choice
+    def resize(self, columns):
+        # import globals
+        global RULES
+        
+        # clear the grid of all cells
+        self.reset()
+        
+        # set number of columns
+        cols = columns
+        
+        # sets the number of rows, ensuring there are enough to reach the bottom of the screen
+        rows = cols * self.height / self.width + 1
+        
+        # get cell_width
+        self.cell_width = self.width / cols
+
+        # create grid of cell objects
+        self.grid = [[cell(self.image, i, j, self.cell_width, RULES) for i in range(cols)] for j in range(rows)]
+    
     # activates the current cell when it is left-clicked
     def activate_cell(self, mouse_position):
         # stores x, y position of mouse pointer
@@ -114,5 +141,15 @@ class game_window():
         # determines row in grid
         grid_position[1] = (grid_position[1] - self.y_offset) / self.cell_width
     
-        # changes cell to be alive
+        # changes cell to be dead
         self.grid[grid_position[1]][grid_position[0]].contents = 0
+
+    # kills all cells
+    def reset(self):
+        # pause propagation
+        # TODO: pause propogation here
+        
+        # iterate through every cell and kill it
+        for row in self.grid:
+            for cell in row:
+                cell.contents = 0

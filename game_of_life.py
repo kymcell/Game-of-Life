@@ -119,7 +119,7 @@ ________________________________________________________________________________
 # creates game window and grid of cells
 def world():
     # import globals
-    global RUNNING, MENU
+    global RUNNING, MENU, life_window
     
     # set size of the bar containing the buttons on the top of the screen
     y_offset = 200
@@ -165,17 +165,17 @@ def world():
     # spacing button that will never be used
     spacing_button_02 = thorpy.make_button("Space")
     
-    # button for selecting how fast the generations will iterate
+    # button for selecting how fast the cells will propagate
     speed_button = thorpy.make_button("Speed")
 
     # button for selecting how large the grid of cells will be
-    size_button = thorpy.make_button("Size")
+    size_button = thorpy.make_button("Size", func=size)
     
-    # button for starting and stopping the generations from iterating
+    # button for starting and stopping propagation of cells
     start_button = thorpy.make_button("Play/Pause")
     
     # button for clearing the grid (kills all cells)
-    reset_button = thorpy.make_button("Reset")
+    reset_button = thorpy.make_button("Reset", func=reset)
     
     # list to hold buttons that will be hidden
     hidden_buttons_list = [seed_button,
@@ -257,20 +257,26 @@ def world():
     
     # while the program is running, continue updating the window
     while RUNNING:
-        user_input(life_window, y_offset)
-        display(life_window)
-        update(life_window, display_box, label_list)
+        user_input(y_offset)
+        display()
+        update(display_box, label_list)
         pygame.display.update()
     pygame.quit()
 
 
 # displays the window
-def display(life_window):
+def display():
+    # import globals
+    global life_window
+    
     game_window.display(life_window)
 
 
 # updates the game_window
-def update(life_window, display_box, label_list):
+def update(display_box, label_list):
+    # import globals
+    global life_window
+    
     # update labels
     label_list[0].set_text(NAME)
     label_list[1].set_text("Survival: " + str(SURVIVAL))
@@ -288,9 +294,9 @@ def update(life_window, display_box, label_list):
 
 
 # determines when the user clicks the mouse or presses the ESC key to exit the program
-def user_input(life_window, y_offset):
+def user_input(y_offset):
     # import globals
-    global RUNNING
+    global RUNNING, life_window
     
     # determines if the program should end
     for event in pygame.event.get():
@@ -475,10 +481,38 @@ ________________________________________________________________________________
 ________________________________________________________________________________________________________________________
 '''
 
+
+# user chooses how large the grid of cells will be
+def size():
+    # import globals
+    global life_window
+    # TODO: Parameters cannot be passed through button functions, otherwise they all run immediately, fix code below
+    # list of choices
+    choices = [("24", life_window.resize(24)),
+               ("30", life_window.resize(30)),
+               ("40", life_window.resize(40)),
+               ("48", life_window.resize(48)),
+               ("60", life_window.resize(60)),
+               ("80", life_window.resize(80)),
+               ("96", life_window.resize(96)),
+               ("120", life_window.resize(120)),
+               ("160", life_window.resize(160)),
+               ("192", life_window.resize(192)),
+               ("240", life_window.resize(240)),
+               ("Cancel", None)]
+    
+    # launches choice window
+    thorpy.launch_blocking_choices("Select a number of columns for the grid:\n", choices)
+
+
 # kills all cells
 def reset():
-    # call the game_window function to kill the cells
-    pass
+    # import globals
+    global life_window
+    
+    # call the life_window reset function
+    life_window.reset()
+
 
 '''
 ________________________________________________________________________________________________________________________
@@ -514,6 +548,9 @@ if __name__ == "__main__":
     
     # menu to be called from thorpy functions
     MENU = None
+    
+    # window holding the grid
+    life_window = None
     
     # call main method
     main()
