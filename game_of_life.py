@@ -13,10 +13,7 @@
 '''
 WORLD:
     The game world consists of a theoretically infinite 2-Dimensional grid of orthogonal squares
-    For our purposes the grid will have a finite limit, chosen from 3 options by the user
-        Large: X x X squares
-        Medium: Y x Y squares
-        Small: Z x Z squares
+    For our purposes the grid will have a finite limit, chosen from multiple options by the user
 
 RULESETS:
     Rulesets are named using the following format:
@@ -275,7 +272,10 @@ def display():
 # updates the game_window
 def update(display_box, label_list):
     # import globals
-    global life_window
+    global life_window, RULESET
+    
+    # update ruleset
+    RULESET = (str(SURVIVAL) + " / " + str(BIRTH) + " / " + str(len(STATES)) + " / " + NEIGHBORHOOD)
     
     # update labels
     label_list[0].set_text(NAME)
@@ -352,16 +352,30 @@ def rules():
     choices = [("Conway's Game of Life", conway),
                ("Brian's Brain", brian),
                ("Custom", custom),
+               ("Information", ruleset_info),
                ("Cancel", None)]
     
     # launches choice window
     thorpy.launch_blocking_choices("Select a ruleset to be used:\n", choices)
 
+def ruleset_info():
+    # launch info window
+    thorpy.launch_nonblocking_alert("RULESETS:\n",
+                                 "Rulesets are named using the following format:\n" +
+                                 "Survival / Birth / States / Neighborhood\n\n" +
+                                 "For example, Conway's Game of Life has the following ruleset:\n" +
+                                 "[2, 3] / [3] / 2 / M\n\n" +
+                                 "If a cell has exactly 2 or 3 neighbors, it will survive to\n" +
+                                 "the next generation, otherwise it dies.\n" +
+                                 "A cell is born if it has exactly 3 neighbors.\n" +
+                                 "There are 2 states, alive and dead.\n" +
+                                 "Utilizes the Moore neighborhood.\n")
+
 
 # Conway's Game of Life Ruleset: [2, 3] / [3] / 2 / M
 def conway():
     # import globals
-    global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, RULESET, ATTRIBUTES, NAME
+    global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, NAME
     
     # set name
     NAME = "Conway's Game of Life"
@@ -371,13 +385,12 @@ def conway():
     BIRTH = [3]
     STATES = range(2)
     NEIGHBORHOOD = "M"
-    RULESET = (str(SURVIVAL) + " / " + str(BIRTH) + " / " + str(len(STATES)) + " / " + NEIGHBORHOOD)
 
 
 # Brian's Brain Ruleset: [0] / [2] / 3 / M
 def brian():
     # import globals
-    global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, RULESET, ATTRIBUTES, NAME
+    global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, NAME
     
     # set name
     NAME = "Brian's Brain"
@@ -387,13 +400,12 @@ def brian():
     BIRTH = [2]
     STATES = range(3)
     NEIGHBORHOOD = "M"
-    RULESET = (str(SURVIVAL) + " / " + str(BIRTH) + " / " + str(len(STATES)) + " / " + NEIGHBORHOOD)
 
 
 # generates random values for Survival / Birth / States / Neighboorhood
 def random_ruleset():
     # import globals
-    global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, RULESET, ATTRIBUTES, NAME
+    global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, NAME
     
     # set name
     NAME = "Random Ruleset"
@@ -437,19 +449,14 @@ def random_ruleset():
     
     # randomly pick STATES values
     STATES = range(randint(2, 10))
-    
-    # generate RULESET
-    RULESET = (str(SURVIVAL) + " / " + str(BIRTH) + " / " + str(len(STATES)) + " / " + NEIGHBORHOOD)
 
 
-# TODO: User choices must be passed as parameters to the custom function
 # user defines all values for Survival / Birth / States / Neighboorhood
 def custom():
     # import globals
-    global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, RULESET, ATTRIBUTES, NAME, survival_button, birth_button, states_button, neighborhood_button
+    global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, NAME, \
+        survival_button, birth_button, states_button, neighborhood_button
     
-    # user must define Neighborhood first to decide domain of Survival and Birth
-    # code for user input
     # set name
     NAME = "Custom Ruleset"
     
@@ -458,12 +465,20 @@ def custom():
     BIRTH = []
     STATES = []
     NEIGHBORHOOD = "None"
-    RULESET = (str(SURVIVAL) + " / " + str(BIRTH) + " / " + str(len(STATES)) + " / " + NEIGHBORHOOD)
     
     # make neighborhood button active
     neighborhood_button.set_visible(True)
     neighborhood_button.set_active(True)
     neighborhood_button.blit()
+    
+    # make list of buttons to be inactive
+    inactive_list = [survival_button, birth_button, states_button]
+    
+    # make other buttons inactive
+    for button in inactive_list:
+        button.set_visible(False)
+        button.set_active(False)
+        button.blit()
 
 
 '''
@@ -488,11 +503,54 @@ ________________________________________________________________________________
 
 # user chooses neighborhood
 def neighborhood():
-    # import globals
-    global neighborhood_selected
-    # TODO: Add functions to neighborhoods
     # list of choices
-    choices = [("Moore Neighborhood (M)"), ("Von Neumann Neighborhood (VN)")]
+    choices = [("Moore Neighborhood (M)", moore_neighborhood),
+               ("Von Neumann Neighborhood (VN)", neumann_neighborhood),
+               ("Cancel", None)]
+
+    # launches choice window
+    thorpy.launch_blocking_choices("Select a neighborhood to be used by the cells:\n\n" +
+                                   "Moore Neighborhood (M): All 8 cells surrounding the central cell\n" +
+                                   "both diagonally and orthogonally.\n\n" +
+                                   "Von Neumann Neighborhood (VN): Only the 4 cells surrounding the\n" +
+                                   "central cell orthogonally.", choices)
+
+
+def moore_neighborhood():
+    # import globals
+    global NEIGHBORHOOD, survival_button, birth_button, states_button
+    
+    # set neighborhood
+    NEIGHBORHOOD = "M"
+    
+    # make list of buttons to be active
+    active_list = [survival_button, birth_button, states_button]
+    
+    # make other buttons active
+    for button in active_list:
+        button.set_visible(True)
+        button.set_active(True)
+        button.blit()
+
+def neumann_neighborhood():
+    # import globals
+    global SURVIVAL, BIRTH, NEIGHBORHOOD, survival_button, birth_button, states_button
+    
+    # set neighborhood
+    NEIGHBORHOOD = "VN"
+    
+    # remove invalid domain values
+    
+    
+    # make list of buttons to be active
+    active_list = [survival_button, birth_button, states_button]
+    
+    # make other buttons active
+    for button in active_list:
+        button.set_visible(True)
+        button.set_active(True)
+        button.blit()
+
 
 # user chooses how large the grid of cells will be
 def size():
@@ -592,8 +650,8 @@ if __name__ == "__main__":
     SURVIVAL = []
     BIRTH = []
     STATES = []
-    NEIGHBORHOOD = ""
-    RULESET = "Survival / Birth / States / Neighborhood"
+    NEIGHBORHOOD = "None"
+    RULESET = (str(SURVIVAL) + " / " + str(BIRTH) + " / " + str(len(STATES)) + " / " + NEIGHBORHOOD)
     
     # place all cell attributes into a list
     ATTRIBUTES = [SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, RULESET]
