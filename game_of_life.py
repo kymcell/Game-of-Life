@@ -116,7 +116,7 @@ ________________________________________________________________________________
 # creates game window and grid of cells
 def world():
     # import globals
-    global RUNNING, MENU, life_window, survival_button, birth_button, states_button, neighborhood_button
+    global RUNNING, MENU, life_window, box, survival_button, birth_button, states_button, neighborhood_button
     
     # set size of the bar containing the buttons on the top of the screen
     y_offset = 200
@@ -148,7 +148,7 @@ def world():
     spacing_button_01 = thorpy.make_button("Space")
     
     # button for selecting survival value
-    survival_button = thorpy.make_button("Survival")
+    survival_button = thorpy.make_button("Survival", func=survival)
     
     # button for selecting birth value
     birth_button = thorpy.make_button("Birth")
@@ -248,6 +248,9 @@ def world():
     
     # set the position of the box
     box.set_topleft((100, 50))
+    box.blit()
+    box.blit()
+    box.blit()
     box.blit()
     box.update()
     # __________________________________________________________________________________________________________________
@@ -375,7 +378,8 @@ def ruleset_info():
 # Conway's Game of Life Ruleset: [2, 3] / [3] / 2 / M
 def conway():
     # import globals
-    global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, NAME
+    global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, NAME, \
+        survival_button, birth_button, states_button, neighborhood_button
     
     # set name
     NAME = "Conway's Game of Life"
@@ -386,11 +390,27 @@ def conway():
     STATES = range(2)
     NEIGHBORHOOD = "M"
 
+    # make list of buttons to be inactive
+    inactive_list = [neighborhood_button, survival_button, birth_button, states_button]
+
+    # make other buttons inactive
+    for button in inactive_list:
+        button.set_active(False)
+        button.set_visible(False)
+        button.blit()
+        box.blit()
+        box.blit()
+        box.blit()
+        box.blit()
+        box.blit()
+        box.update()
+
 
 # Brian's Brain Ruleset: [0] / [2] / 3 / M
 def brian():
     # import globals
-    global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, NAME
+    global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, NAME, \
+        survival_button, birth_button, states_button, neighborhood_button
     
     # set name
     NAME = "Brian's Brain"
@@ -401,11 +421,27 @@ def brian():
     STATES = range(3)
     NEIGHBORHOOD = "M"
 
+    # make list of buttons to be inactive
+    inactive_list = [neighborhood_button, survival_button, birth_button, states_button]
+
+    # make other buttons inactive
+    for button in inactive_list:
+        button.set_active(False)
+        button.set_visible(False)
+        button.blit()
+        box.blit()
+        box.blit()
+        box.blit()
+        box.blit()
+        box.blit()
+        box.update()
+
 
 # generates random values for Survival / Birth / States / Neighboorhood
 def random_ruleset():
     # import globals
-    global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, NAME
+    global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, NAME, \
+        survival_button, birth_button, states_button, neighborhood_button
     
     # set name
     NAME = "Random Ruleset"
@@ -450,12 +486,27 @@ def random_ruleset():
     # randomly pick STATES values
     STATES = range(randint(2, 10))
 
+    # make list of buttons to be inactive
+    inactive_list = [neighborhood_button, survival_button, birth_button, states_button]
+
+    # make other buttons inactive
+    for button in inactive_list:
+        button.set_active(False)
+        button.set_visible(False)
+        button.blit()
+        box.blit()
+        box.blit()
+        box.blit()
+        box.blit()
+        box.blit()
+        box.update()
+
 
 # user defines all values for Survival / Birth / States / Neighboorhood
 def custom():
     # import globals
     global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, NAME, \
-        survival_button, birth_button, states_button, neighborhood_button
+        box, survival_button, birth_button, states_button, neighborhood_button
     
     # set name
     NAME = "Custom Ruleset"
@@ -476,9 +527,15 @@ def custom():
     
     # make other buttons inactive
     for button in inactive_list:
-        button.set_visible(False)
         button.set_active(False)
+        button.set_visible(False)
         button.blit()
+        box.blit()
+        box.blit()
+        box.blit()
+        box.blit()
+        box.blit()
+        box.update()
 
 
 '''
@@ -497,7 +554,129 @@ def seed():
 
 '''
 ________________________________________________________________________________________________________________________
-                                            OTHER BUTTON FUNCTIONS
+                                                 SURVIVAL
+________________________________________________________________________________________________________________________
+'''
+
+# user chooses survival values to be used
+def survival():
+    # import globals
+    global NEIGHBORHOOD
+    
+    # list of choices
+    choices = []
+    
+    # set choices for Moore neighborhood
+    if NEIGHBORHOOD == "M":
+        # list of choices
+        choices = [("0", sur_0),
+                   ("1", sur_1),
+                   ("2", sur_2),
+                   ("3", sur_3),
+                   ("4", sur_4),
+                   ("5", sur_5),
+                   ("6", sur_6),
+                   ("7", sur_7),
+                   ("8", sur_8),
+                   ("Information", survival_info),
+                   ("Cancel", None)]
+    
+    # set choices for Von Neumann neighborhood
+    if NEIGHBORHOOD == "VN":
+        # list of choices
+        choices = [("0", sur_0),
+                   ("1", sur_1),
+                   ("2", sur_2),
+                   ("3", sur_3),
+                   ("4", sur_4),
+                   ("Information", survival_info),
+                   ("Cancel", None)]
+    
+    # launches choice window
+    thorpy.launch_blocking_choices("Select survival values to be used:\n", choices)
+
+
+def survival_info():
+    # launch info window
+    thorpy.launch_nonblocking_alert("SURVIVAL:\n",
+                                    "Survival means a cell will stay alive (active) until the next\n" +
+                                    "generation if it satisfies the neighborhood conditions.\n" +
+                                    "If the neighborhood conditions are not satisfied, the cell\n" +
+                                    "will die (deactivate).\n\n" +
+                                    "If a cell has exactly x neighbors, it will survive to\n" +
+                                    "the next generation, otherwise it dies.\n\n" +
+                                    "Note:\n" +
+                                    "A domain of 0 is allowed for the Survival value, this means\n" +
+                                    "that a living cell will always die in the next generation.")
+
+
+# survival functions
+# ______________________________________________________________________________________________________________________
+# adds or removes survival value of 0
+def sur_0():
+    # import globals
+    global SURVIVAL
+    
+    # TODO: Complete this and copy to other sur_x methods
+
+# adds or removes survival value of 1
+def sur_1():
+    pass
+
+# adds or removes survival value of 2
+def sur_2():
+    pass
+
+# adds or removes survival value of 3
+def sur_3():
+    pass
+
+# adds or removes survival value of 4
+def sur_4():
+    pass
+
+# adds or removes survival value of 5
+def sur_5():
+    pass
+
+# adds or removes survival value of 6
+def sur_6():
+    pass
+
+# adds or removes survival value of 7
+def sur_7():
+    pass
+
+# adds or removes survival value of 8
+def sur_8():
+    pass
+
+# ______________________________________________________________________________________________________________________
+
+
+'''
+________________________________________________________________________________________________________________________
+                                                  BIRTH
+________________________________________________________________________________________________________________________
+'''
+
+
+# TODO: Add this
+
+
+'''
+________________________________________________________________________________________________________________________
+                                                  STATES
+________________________________________________________________________________________________________________________
+'''
+
+
+# TODO: Add this
+
+
+'''
+________________________________________________________________________________________________________________________
+                                               NEIGHBORHOOD
 ________________________________________________________________________________________________________________________
 '''
 
@@ -507,7 +686,7 @@ def neighborhood():
     choices = [("Moore Neighborhood (M)", moore_neighborhood),
                ("Von Neumann Neighborhood (VN)", neumann_neighborhood),
                ("Cancel", None)]
-
+    
     # launches choice window
     thorpy.launch_blocking_choices("Select a neighborhood to be used by the cells:\n\n" +
                                    "Moore Neighborhood (M): All 8 cells surrounding the central cell\n" +
@@ -532,6 +711,7 @@ def moore_neighborhood():
         button.set_active(True)
         button.blit()
 
+
 def neumann_neighborhood():
     # import globals
     global SURVIVAL, BIRTH, NEIGHBORHOOD, survival_button, birth_button, states_button
@@ -539,8 +719,8 @@ def neumann_neighborhood():
     # set neighborhood
     NEIGHBORHOOD = "VN"
     
-    # remove invalid domain values
-    
+    # remove invalid domain values from SURVIVAL and BIRTH
+    # TODO: Add this
     
     # make list of buttons to be active
     active_list = [survival_button, birth_button, states_button]
@@ -550,6 +730,13 @@ def neumann_neighborhood():
         button.set_visible(True)
         button.set_active(True)
         button.blit()
+
+
+'''
+________________________________________________________________________________________________________________________
+                                            OTHER BUTTON FUNCTIONS
+________________________________________________________________________________________________________________________
+'''
 
 
 # user chooses how large the grid of cells will be
@@ -670,6 +857,9 @@ if __name__ == "__main__":
     
     # window holding the grid
     life_window = None
+    
+    # box holding the buttons
+    box = None
     
     # global buttons
     survival_button = None
