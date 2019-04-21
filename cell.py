@@ -58,7 +58,7 @@ import pygame
 from neighborhood import *
 
 class cell():
-    # global variables
+    # class variables
     SURVIVAL = []
     BIRTH = []
     STATES = []
@@ -69,7 +69,7 @@ class cell():
     
     def __init__(self, surface, x_pos, y_pos, cell_width, ATTRIBUTES):
         # import globals
-        global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, RULESET, CONTENTS, SCALE
+        global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, RULESET, SCALE
         
         SURVIVAL = ATTRIBUTES[0]
         BIRTH = ATTRIBUTES[1]
@@ -77,7 +77,6 @@ class cell():
         NEIGHBORHOOD = ATTRIBUTES[3]
         RULESET = ATTRIBUTES[4]
         self.contents = 0
-        self.neighbor_positions = []
         self.neighbors = []
         self.alive_neighbors = 0
         
@@ -118,12 +117,19 @@ class cell():
     
     
     # updates the cell
-    def update(self):
+    def update(self, ATTRIBUTES, grid):
         # import globals
-        global SCALE
+        global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, RULESET, SCALE
         
         # set top left corner as reference
         self.rect.topleft = (self.x_pos*SCALE, self.y_pos*SCALE)
+        
+        # set new attributes
+        SURVIVAL = ATTRIBUTES[0]
+        BIRTH = ATTRIBUTES[1]
+        STATES = ATTRIBUTES[2]
+        NEIGHBORHOOD = ATTRIBUTES[3]
+        RULESET = ATTRIBUTES[4]
         
         # reset number of alive neighbors
         self.alive_neighbors = 0
@@ -136,37 +142,35 @@ class cell():
     
     # determines the number of neighbors
     def find_neighbors(self, grid):
-        # TODO : Edit this and replace with the dropdown menu version
-        # Thoughts on how to implement:
-        # Depending on where menus are implemented, pass these choices through the update functions
-        # and constantly update the user choice.
-        # Need following variables:
-        # user_survival_choice
-        # user_birth_choice
-        # user_states_choice
-        # user_neighborhood_choice
-        user_neighborhood_choice = "Moore"
+        # import globals
+        global NEIGHBORHOOD
+        
+        # create empty list
+        neighbor_positions = []
+        
+        # set user choice
+        user_neighborhood_choice = NEIGHBORHOOD
         
         # sets neighbor_positions to the Moore Neighborhood
-        if user_neighborhood_choice == "Moore":
-            self.neighbor_positions = moore()
+        if user_neighborhood_choice == "M":
+            neighbor_positions = moore()
         
         # sets neighbor_positions to the Von Neumann Neighborhood
-        if user_neighborhood_choice == "Von Neumann":
-            self.neighbor_positions = neumann()
+        if user_neighborhood_choice == "VN":
+            neighbor_positions = neumann()
         
         # determine positions of neighbors
-        for neighbor in self.neighbor_positions:
+        for neighbor in neighbor_positions:
             neighbor[0] += self.x_pos
             neighbor[1] += self.y_pos
         
         # fixes cells from bleeding over from the right side of the screen to the left side
-        for neighbor in self.neighbor_positions:
+        for neighbor in neighbor_positions:
             if neighbor[0] < 0:
                 neighbor[0] -= 1
         
         # add neighbors to neighbor list
-        for neighbor in self.neighbor_positions:
+        for neighbor in neighbor_positions:
             try:
                 self.neighbors.append(grid[neighbor[1]][neighbor[0]])
             except:

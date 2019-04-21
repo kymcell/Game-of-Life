@@ -53,8 +53,8 @@ class game_window():
         RULES = ATTRIBUTES
         
         # set columns, must be one of the following options for 1920x1080 resolution screen:
-        # cols = 15, 16, 20, 24, 30, 32, 40, 48, 60, 64, 80, 96, 120, 128, 160, 192, 240, 320, 384
-        cols = 48
+        # cols = 24, 48, 96, 120, 192, 240
+        cols = 96
         
         # sets the number of rows, ensuring there are enough to reach the bottom of the screen
         rows = cols * self.height / self.width + 1
@@ -64,11 +64,6 @@ class game_window():
         
         # create grid of cell objects
         self.grid = [ [cell(self.image, i, j, self.cell_width, ATTRIBUTES) for i in range(cols) ] for j in range(rows) ]
-        
-        # determine neighbors for all cells
-        for row in self.grid:
-            for cells in row:
-                cells.find_neighbors(self.grid)
     
     
     # displays the window and cells
@@ -86,14 +81,25 @@ class game_window():
     
     
     # updates the window and cells
-    def update(self):
+    def update(self, new_params):
+        # import globals
+        global RULES
+        
         # set top left corner as reference
         self.rect.topleft = self.pos
+        
+        # set new attributes
+        RULES = new_params
+
+        #determine neighbors for all cells
+        for row in self.grid:
+            for cells in row:
+                cells.find_neighbors(self.grid)
         
         # call cell update
         for row in self.grid:
             for cell in row:
-                cell.update()
+                cell.update(RULES, self.grid)
     
     # resizes the grid to the user's choice
     def resize(self, columns):

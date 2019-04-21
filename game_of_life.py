@@ -73,10 +73,10 @@ NOTE:
 REFERENCES:
     Cellular Automata Information:
     www.mirekw.com/ca/index.html
-
+    
     Game of Life Tutorial:
     https://www.youtube.com/watch?v=GKe1aGQlKDY&list=PLryDJVmh-ww1OZnkZkzlaewDrhHy2Rli2&index=1
-
+    
     Thorpy GUI Information:
     http://www.thorpy.org/documentation.html
 '''
@@ -279,7 +279,7 @@ def display():
 # updates the game_window
 def update(display_box, label_list):
     # import globals
-    global life_window, SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, RULESET
+    global life_window, SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, RULESET, ATTRIBUTES
     
     # update ruleset
     RULESET = (str(SURVIVAL) + " / " + str(BIRTH) + " / " + str(len(STATES)) + " / " + NEIGHBORHOOD)
@@ -296,8 +296,11 @@ def update(display_box, label_list):
     display_box.blit()
     display_box.update()
     
+    # update attribute list
+    ATTRIBUTES = [SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, RULESET]
+    
     # update game_window
-    game_window.update(life_window)
+    game_window.update(life_window, ATTRIBUTES)
 
 
 # determines when the user clicks the mouse or presses the ESC key to exit the program
