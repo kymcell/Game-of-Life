@@ -117,7 +117,7 @@ class cell():
     
     
     # updates the cell
-    def update(self, ATTRIBUTES, grid):
+    def update(self, ATTRIBUTES):
         # import globals
         global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, RULESET, SCALE
         

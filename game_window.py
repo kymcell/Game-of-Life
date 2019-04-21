@@ -99,7 +99,7 @@ class game_window():
         # call cell update
         for row in self.grid:
             for cell in row:
-                cell.update(RULES, self.grid)
+                cell.update(RULES)
     
     # resizes the grid to the user's choice
     def resize(self, columns):
