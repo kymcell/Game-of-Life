@@ -97,9 +97,6 @@ ________________________________________________________________________________
 
 # main method
 def main():
-    # import globals
-    global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, RULESET, ATTRIBUTES
-    
     # initialize pygame
     pygame.init()
     
@@ -142,7 +139,7 @@ def world():
     ruleset_button = thorpy.make_button("Ruleset", func=rules)
 
     # button for selecting which seed to use
-    seed_button = thorpy.make_button("Seed")
+    seed_button = thorpy.make_button("Seed", func=seed)
     
     # spacing button that will never be used
     spacing_button_01 = thorpy.make_button("Space")
@@ -151,10 +148,10 @@ def world():
     survival_button = thorpy.make_button("Survival", func=survival)
     
     # button for selecting birth value
-    birth_button = thorpy.make_button("Birth")
+    birth_button = thorpy.make_button("Birth", func=birth)
     
     # button for selecting the number of states each cell has
-    states_button = thorpy.make_button("States")
+    states_button = thorpy.make_button("States", func=states)
 
     # button for selecting which neighborhood the cells will use
     neighborhood_button = thorpy.make_button("Neighborhood", func=neighborhood)
@@ -163,13 +160,13 @@ def world():
     spacing_button_02 = thorpy.make_button("Space")
     
     # button for selecting how fast the cells will propagate
-    speed_button = thorpy.make_button("Speed")
+    speed_button = thorpy.make_button("Speed", func=speed)
 
     # button for selecting how large the grid of cells will be
     size_button = thorpy.make_button("Size", func=size)
     
     # button for starting and stopping propagation of cells
-    start_button = thorpy.make_button("Play/Pause")
+    start_button = thorpy.make_button("Play/Pause", func=play_pause)
     
     # button for clearing the grid (kills all cells)
     reset_button = thorpy.make_button("Reset", func=reset)
@@ -212,12 +209,12 @@ def world():
     box.set_main_color((220, 220, 220, 100))
     
     # labels that will display the global variables
-    name_label = thorpy.make_text("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
-    survival_label = thorpy.make_text("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
-    birth_label = thorpy.make_text("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
-    states_label = thorpy.make_text("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
-    neighborhood_label = thorpy.make_text("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
-    ruleset_label = thorpy.make_text("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
+    name_label = thorpy.make_text("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
+    survival_label = thorpy.make_text("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
+    birth_label = thorpy.make_text("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
+    states_label = thorpy.make_text("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
+    neighborhood_label = thorpy.make_text("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
+    ruleset_label = thorpy.make_text("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
     
     # list that holds all the labels
     label_list = [name_label, survival_label, birth_label, states_label, neighborhood_label, ruleset_label]
@@ -232,9 +229,16 @@ def world():
 
     # set the display box to fit the elements
     display_box.fit_children(margins=(30, 30))
+
+    # get screen resolution
+    resolution = pygame.display.Info()
+
+    # set width and height
+    width = resolution.current_w
+    height = resolution.current_h
     
     # set the position of the display box
-    display_box.set_topleft((1000, 0))
+    display_box.set_topleft((width / 2, y_offset / 20))
     display_box.blit()
     display_box.update()
     
@@ -247,7 +251,7 @@ def world():
         element.surface = window
     
     # set the position of the box
-    box.set_topleft((100, 50))
+    box.set_topleft((width / 20, y_offset / 4))
     box.blit()
     box.blit()
     box.blit()
@@ -275,7 +279,7 @@ def display():
 # updates the game_window
 def update(display_box, label_list):
     # import globals
-    global life_window, RULESET
+    global life_window, SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, RULESET
     
     # update ruleset
     RULESET = (str(SURVIVAL) + " / " + str(BIRTH) + " / " + str(len(STATES)) + " / " + NEIGHBORHOOD)
@@ -453,6 +457,9 @@ def random_ruleset():
     if (option == 1):
         NEIGHBORHOOD = "VN"
     
+    # holds upper bound
+    upper_bound = 0
+    
     # randomly pick SURVIVAL values
     if (NEIGHBORHOOD == "M"):
         upper_bound = 8
@@ -548,8 +555,10 @@ ________________________________________________________________________________
 def seed():
     pass
 
+
 # randomly fills the world with alive and dead cells
-# TODO: create seed that randomly fills the grid with alive and dead cells
+def seed_random():
+    pass # TODO: Delete this line and finish the function
 
 
 '''
@@ -569,31 +578,31 @@ def survival():
     # set choices for Moore neighborhood
     if NEIGHBORHOOD == "M":
         # list of choices
-        choices = [("0", sur_0),
-                   ("1", sur_1),
-                   ("2", sur_2),
-                   ("3", sur_3),
-                   ("4", sur_4),
-                   ("5", sur_5),
-                   ("6", sur_6),
-                   ("7", sur_7),
-                   ("8", sur_8),
+        choices = [(" 0 ", sur_0),
+                   (" 1 ", sur_1),
+                   (" 2 ", sur_2),
+                   (" 3 ", sur_3),
+                   (" 4 ", sur_4),
+                   (" 5 ", sur_5),
+                   (" 6 ", sur_6),
+                   (" 7 ", sur_7),
+                   (" 8 ", sur_8),
                    ("Information", survival_info),
                    ("Cancel", None)]
     
     # set choices for Von Neumann neighborhood
     if NEIGHBORHOOD == "VN":
         # list of choices
-        choices = [("0", sur_0),
-                   ("1", sur_1),
-                   ("2", sur_2),
-                   ("3", sur_3),
-                   ("4", sur_4),
+        choices = [(" 0 ", sur_0),
+                   (" 1 ", sur_1),
+                   (" 2 ", sur_2),
+                   (" 3 ", sur_3),
+                   (" 4 ", sur_4),
                    ("Information", survival_info),
                    ("Cancel", None)]
     
     # launches choice window
-    thorpy.launch_blocking_choices("Select survival values to be used:\n", choices)
+    thorpy.launch_blocking_choices("Select survival values to be added or removed:\n", choices)
 
 
 def survival_info():
@@ -616,40 +625,211 @@ def survival_info():
 def sur_0():
     # import globals
     global SURVIVAL
+
+    # boolean indicating if the value has been removed
+    removed = False
     
-    # TODO: Complete this and copy to other sur_x methods
+    # removes 0 if it is present
+    if 0 in SURVIVAL:
+        SURVIVAL.remove(0)
+        removed = True
+
+    # adds 0 if it is not present
+    if 0 not in SURVIVAL and removed == False:
+        SURVIVAL = []
+        SURVIVAL.append(0)
 
 # adds or removes survival value of 1
 def sur_1():
-    pass
+    # import globals
+    global SURVIVAL
+    
+    # boolean indicating if the value has been removed
+    removed = False
+    
+    # removes 0 once other numbers are present
+    if 0 in SURVIVAL:
+        SURVIVAL.remove(0)
+    
+    # removes 1 if it is present
+    if 1 in SURVIVAL:
+        SURVIVAL.remove(1)
+        removed = True
+    
+    # adds 1 if it is not present
+    if 1 not in SURVIVAL and removed == False:
+        SURVIVAL.append(1)
+    
+    # sorts the list in ascending order
+    SURVIVAL.sort()
 
 # adds or removes survival value of 2
 def sur_2():
-    pass
+    # import globals
+    global SURVIVAL
+    
+    # boolean indicating if the value has been removed
+    removed = False
+    
+    # removes 0 once other numbers are present
+    if 0 in SURVIVAL:
+        SURVIVAL.remove(0)
+    
+    # removes 2 if it is present
+    if 2 in SURVIVAL:
+        SURVIVAL.remove(2)
+        removed = True
+    
+    # adds 2 if it is not present
+    if 2 not in SURVIVAL and removed == False:
+        SURVIVAL.append(2)
+    
+    # sorts the list in ascending order
+    SURVIVAL.sort()
 
 # adds or removes survival value of 3
 def sur_3():
-    pass
+    # import globals
+    global SURVIVAL
+    
+    # boolean indicating if the value has been removed
+    removed = False
+    
+    # removes 0 once other numbers are present
+    if 0 in SURVIVAL:
+        SURVIVAL.remove(0)
+    
+    # removes 3 if it is present
+    if 3 in SURVIVAL:
+        SURVIVAL.remove(3)
+        removed = True
+    
+    # adds 3 if it is not present
+    if 3 not in SURVIVAL and removed == False:
+        SURVIVAL.append(3)
+    
+    # sorts the list in ascending order
+    SURVIVAL.sort()
 
 # adds or removes survival value of 4
 def sur_4():
-    pass
+    # import globals
+    global SURVIVAL
+    
+    # boolean indicating if the value has been removed
+    removed = False
+    
+    # removes 0 once other numbers are present
+    if 0 in SURVIVAL:
+        SURVIVAL.remove(0)
+    
+    # removes 4 if it is present
+    if 4 in SURVIVAL:
+        SURVIVAL.remove(4)
+        removed = True
+    
+    # adds 4 if it is not present
+    if 4 not in SURVIVAL and removed == False:
+        SURVIVAL.append(4)
+    
+    # sorts the list in ascending order
+    SURVIVAL.sort()
 
 # adds or removes survival value of 5
 def sur_5():
-    pass
+    # import globals
+    global SURVIVAL
+    
+    # boolean indicating if the value has been removed
+    removed = False
+    
+    # removes 0 once other numbers are present
+    if 0 in SURVIVAL:
+        SURVIVAL.remove(0)
+    
+    # removes 5 if it is present
+    if 5 in SURVIVAL:
+        SURVIVAL.remove(5)
+        removed = True
+    
+    # adds 5 if it is not present
+    if 5 not in SURVIVAL and removed == False:
+        SURVIVAL.append(5)
+    
+    # sorts the list in ascending order
+    SURVIVAL.sort()
 
 # adds or removes survival value of 6
 def sur_6():
-    pass
+    # import globals
+    global SURVIVAL
+    
+    # boolean indicating if the value has been removed
+    removed = False
+    
+    # removes 0 once other numbers are present
+    if 0 in SURVIVAL:
+        SURVIVAL.remove(0)
+    
+    # removes 6 if it is present
+    if 6 in SURVIVAL:
+        SURVIVAL.remove(6)
+        removed = True
+    
+    # adds 6 if it is not present
+    if 6 not in SURVIVAL and removed == False:
+        SURVIVAL.append(6)
+    
+    # sorts the list in ascending order
+    SURVIVAL.sort()
 
 # adds or removes survival value of 7
 def sur_7():
-    pass
+    # import globals
+    global SURVIVAL
+    
+    # boolean indicating if the value has been removed
+    removed = False
+    
+    # removes 0 once other numbers are present
+    if 0 in SURVIVAL:
+        SURVIVAL.remove(0)
+    
+    # removes 7 if it is present
+    if 7 in SURVIVAL:
+        SURVIVAL.remove(7)
+        removed = True
+    
+    # adds 7 if it is not present
+    if 7 not in SURVIVAL and removed == False:
+        SURVIVAL.append(7)
+    
+    # sorts the list in ascending order
+    SURVIVAL.sort()
 
 # adds or removes survival value of 8
 def sur_8():
-    pass
+    # import globals
+    global SURVIVAL
+    
+    # boolean indicating if the value has been removed
+    removed = False
+    
+    # removes 0 once other numbers are present
+    if 0 in SURVIVAL:
+        SURVIVAL.remove(0)
+    
+    # removes 8 if it is present
+    if 8 in SURVIVAL:
+        SURVIVAL.remove(8)
+        removed = True
+    
+    # adds 8 if it is not present
+    if 8 not in SURVIVAL and removed == False:
+        SURVIVAL.append(8)
+    
+    # sorts the list in ascending order
+    SURVIVAL.sort()
 
 # ______________________________________________________________________________________________________________________
 
@@ -660,8 +840,247 @@ ________________________________________________________________________________
 ________________________________________________________________________________________________________________________
 '''
 
+# user chooses birth values to be used
+def birth():
+    # import globals
+    global NEIGHBORHOOD
+    
+    # list of choices
+    choices = []
+    
+    # set choices for Moore neighborhood
+    if NEIGHBORHOOD == "M":
+        # list of choices
+        choices = [(" 1 ", bir_1),
+                   (" 2 ", bir_2),
+                   (" 3 ", bir_3),
+                   (" 4 ", bir_4),
+                   (" 5 ", bir_5),
+                   (" 6 ", bir_6),
+                   (" 7 ", bir_7),
+                   (" 8 ", bir_8),
+                   ("Information", birth_info),
+                   ("Cancel", None)]
+    
+    # set choices for Von Neumann neighborhood
+    if NEIGHBORHOOD == "VN":
+        # list of choices
+        choices = [(" 1 ", bir_1),
+                   (" 2 ", bir_2),
+                   (" 3 ", bir_3),
+                   (" 4 ", bir_4),
+                   ("Information", birth_info),
+                   ("Cancel", None)]
+    
+    # launches choice window
+    thorpy.launch_blocking_choices("Select birth values to be added or removed:\n", choices)
 
-# TODO: Add this
+
+def birth_info():
+    # launch info window
+    thorpy.launch_nonblocking_alert("BIRTH:\n",
+                                    "Birth means a cell that is dead (deactive) will be born (activate)\n" +
+                                    "in the next generation if it satisfies the neighborhood conditions.\n" +
+                                    "A cell is considered a neighbor if it is within the specified\n" +
+                                    "neighborhood and in the alive (active) state.\n\n" +
+                                    "A cell is born if it has exactly x neighbors.")
+
+
+# birth functions
+# ______________________________________________________________________________________________________________________
+# adds or removes birth value of 1
+def bir_1():
+    # import globals
+    global BIRTH
+    
+    # boolean indicating if the value has been removed
+    removed = False
+    
+    # removes 0 once other numbers are present
+    if 0 in BIRTH:
+        BIRTH.remove(0)
+    
+    # removes 1 if it is present
+    if 1 in BIRTH:
+        BIRTH.remove(1)
+        removed = True
+    
+    # adds 1 if it is not present
+    if 1 not in BIRTH and removed == False:
+        BIRTH.append(1)
+    
+    # sorts the list in ascending order
+    BIRTH.sort()
+
+# adds or removes birth value of 2
+def bir_2():
+    # import globals
+    global BIRTH
+    
+    # boolean indicating if the value has been removed
+    removed = False
+    
+    # removes 0 once other numbers are present
+    if 0 in BIRTH:
+        BIRTH.remove(0)
+    
+    # removes 2 if it is present
+    if 2 in BIRTH:
+        BIRTH.remove(2)
+        removed = True
+    
+    # adds 2 if it is not present
+    if 2 not in BIRTH and removed == False:
+        BIRTH.append(2)
+    
+    # sorts the list in ascending order
+    BIRTH.sort()
+
+# adds or removes birth value of 3
+def bir_3():
+    # import globals
+    global BIRTH
+    
+    # boolean indicating if the value has been removed
+    removed = False
+    
+    # removes 0 once other numbers are present
+    if 0 in BIRTH:
+        BIRTH.remove(0)
+    
+    # removes 3 if it is present
+    if 3 in BIRTH:
+        BIRTH.remove(3)
+        removed = True
+    
+    # adds 3 if it is not present
+    if 3 not in BIRTH and removed == False:
+        BIRTH.append(3)
+    
+    # sorts the list in ascending order
+    BIRTH.sort()
+
+# adds or removes birth value of 4
+def bir_4():
+    # import globals
+    global BIRTH
+    
+    # boolean indicating if the value has been removed
+    removed = False
+    
+    # removes 0 once other numbers are present
+    if 0 in BIRTH:
+        BIRTH.remove(0)
+    
+    # removes 4 if it is present
+    if 4 in BIRTH:
+        BIRTH.remove(4)
+        removed = True
+    
+    # adds 4 if it is not present
+    if 4 not in BIRTH and removed == False:
+        BIRTH.append(4)
+    
+    # sorts the list in ascending order
+    BIRTH.sort()
+
+# adds or removes birth value of 5
+def bir_5():
+    # import globals
+    global BIRTH
+    
+    # boolean indicating if the value has been removed
+    removed = False
+    
+    # removes 0 once other numbers are present
+    if 0 in BIRTH:
+        BIRTH.remove(0)
+    
+    # removes 5 if it is present
+    if 5 in BIRTH:
+        BIRTH.remove(5)
+        removed = True
+    
+    # adds 5 if it is not present
+    if 5 not in BIRTH and removed == False:
+        BIRTH.append(5)
+    
+    # sorts the list in ascending order
+    BIRTH.sort()
+
+# adds or removes birth value of 6
+def bir_6():
+    # import globals
+    global BIRTH
+    
+    # boolean indicating if the value has been removed
+    removed = False
+    
+    # removes 0 once other numbers are present
+    if 0 in BIRTH:
+        BIRTH.remove(0)
+    
+    # removes 6 if it is present
+    if 6 in BIRTH:
+        BIRTH.remove(6)
+        removed = True
+    
+    # adds 6 if it is not present
+    if 6 not in BIRTH and removed == False:
+        BIRTH.append(6)
+    
+    # sorts the list in ascending order
+    BIRTH.sort()
+
+# adds or removes birth value of 7
+def bir_7():
+    # import globals
+    global BIRTH
+    
+    # boolean indicating if the value has been removed
+    removed = False
+    
+    # removes 0 once other numbers are present
+    if 0 in BIRTH:
+        BIRTH.remove(0)
+    
+    # removes 7 if it is present
+    if 7 in BIRTH:
+        BIRTH.remove(7)
+        removed = True
+    
+    # adds 7 if it is not present
+    if 7 not in BIRTH and removed == False:
+        BIRTH.append(7)
+    
+    # sorts the list in ascending order
+    BIRTH.sort()
+
+# adds or removes birth value of 8
+def bir_8():
+    # import globals
+    global BIRTH
+    
+    # boolean indicating if the value has been removed
+    removed = False
+    
+    # removes 0 once other numbers are present
+    if 0 in BIRTH:
+        BIRTH.remove(0)
+    
+    # removes 8 if it is present
+    if 8 in BIRTH:
+        BIRTH.remove(8)
+        removed = True
+    
+    # adds 8 if it is not present
+    if 8 not in BIRTH and removed == False:
+        BIRTH.append(8)
+    
+    # sorts the list in ascending order
+    BIRTH.sort()
+
+# ______________________________________________________________________________________________________________________
 
 
 '''
@@ -670,8 +1089,117 @@ ________________________________________________________________________________
 ________________________________________________________________________________________________________________________
 '''
 
+# user chooses how many states each cell will have
+def states():
+    # list of choices
+    choices = [(" 2 ", sta_2),
+               (" 3 ", sta_3),
+               (" 4 ", sta_4),
+               (" 5 ", sta_5),
+               (" 6 ", sta_6),
+               (" 7 ", sta_7),
+               (" 8 ", sta_8),
+               (" 9 ", sta_9),
+               ("10", sta_10),
+               ("Information", states_info),
+               ("Cancel", None)]
+    
+    # launches choice window
+    thorpy.launch_blocking_choices("Select how many states each cell will have:\n", choices)
 
-# TODO: Add this
+
+def states_info():
+    # launch info window
+    thorpy.launch_nonblocking_alert("STATES:\n",
+                                    "States refers to the number of states that a cell has.\n" +
+                                    "A cell can theoretically have an infinite number of states.\n\n" +
+                                    "There are x states, alive, dead, and x-2 states of decay.\n\n" +
+                                    "For example, if a cell has 4 states, it has the following behavior:\n" +
+                                    "0 - Dead    (Graphically, this cell is white)\n" +
+                                    "1 - Alive   (Graphically, this cell is black)\n" +
+                                    "2 - Dying   (Graphically, this cell is a unique color)\n" +
+                                    "3 - Dying   (Graphically, this cell is a unique color)\n\n" +
+                                    "After the final state of decay, the cell will die (deactivate)\n" +
+                                    "and return to a value of 0.\n\n" +
+                                    "For the purposes of birth, the states of decay (dying) are not\n" +
+                                    "considered to be alive.")
+
+
+# state functions
+# ______________________________________________________________________________________________________________________
+# sets the number of states to 2
+def sta_2():
+    # import globals
+    global STATES
+    
+    # set states value
+    STATES = range(2)
+
+# sets the number of states to 3
+def sta_3():
+    # import globals
+    global STATES
+    
+    # set states value
+    STATES = range(3)
+
+# sets the number of states to 4
+def sta_4():
+    # import globals
+    global STATES
+    
+    # set states value
+    STATES = range(4)
+
+# sets the number of states to 5
+def sta_5():
+    # import globals
+    global STATES
+    
+    # set states value
+    STATES = range(5)
+
+# sets the number of states to 6
+def sta_6():
+    # import globals
+    global STATES
+    
+    # set states value
+    STATES = range(6)
+
+# sets the number of states to 7
+def sta_7():
+    # import globals
+    global STATES
+    
+    # set states value
+    STATES = range(7)
+
+# sets the number of states to 8
+def sta_8():
+    # import globals
+    global STATES
+    
+    # set states value
+    STATES = range(8)
+
+# sets the number of states to 9
+def sta_9():
+    # import globals
+    global STATES
+    
+    # set states value
+    STATES = range(9)
+
+# sets the number of states to 10
+def sta_10():
+    # import globals
+    global STATES
+    
+    # set states value
+    STATES = range(10)
+
+# ______________________________________________________________________________________________________________________
 
 
 '''
@@ -685,14 +1213,23 @@ def neighborhood():
     # list of choices
     choices = [("Moore Neighborhood (M)", moore_neighborhood),
                ("Von Neumann Neighborhood (VN)", neumann_neighborhood),
+               ("Information", neighborhood_info),
                ("Cancel", None)]
     
     # launches choice window
-    thorpy.launch_blocking_choices("Select a neighborhood to be used by the cells:\n\n" +
-                                   "Moore Neighborhood (M): All 8 cells surrounding the central cell\n" +
-                                   "both diagonally and orthogonally.\n\n" +
-                                   "Von Neumann Neighborhood (VN): Only the 4 cells surrounding the\n" +
-                                   "central cell orthogonally.", choices)
+    thorpy.launch_blocking_choices("Select a neighborhood to be used by the cells:\n", choices)
+
+
+def neighborhood_info():
+    # launch info window
+    thorpy.launch_nonblocking_alert("NEIGHBORHOOD:\n",
+                                    "The neighborhood of a cell is defined according to the type of\n" +
+                                    "neighborhood it is given.\n\n" +
+                                    "There are two main neighborhoods:\n\n" +
+                                    "Moore Neighborhood (M): All 8 cells surrounding the central cell\n" +
+                                    "both diagonally and orthogonally.\n\n" +
+                                    "Von Neumann Neighborhood (VN): Only the 4 cells surrounding the\n" +
+                                    "central cell orthogonally.")
 
 
 def moore_neighborhood():
@@ -719,8 +1256,15 @@ def neumann_neighborhood():
     # set neighborhood
     NEIGHBORHOOD = "VN"
     
+    # define invalid domain values
+    invalid_domain = [5,6,7,8]
+    
     # remove invalid domain values from SURVIVAL and BIRTH
-    # TODO: Add this
+    for value in invalid_domain:
+        if value in SURVIVAL:
+            SURVIVAL.remove(value)
+        if value in BIRTH:
+            BIRTH.remove(value)
     
     # make list of buttons to be active
     active_list = [survival_button, birth_button, states_button]
@@ -738,6 +1282,10 @@ ________________________________________________________________________________
 ________________________________________________________________________________________________________________________
 '''
 
+# user chooses how fast the generations will propagate
+def speed():
+    pass # TODO: Delete this line and finish the function
+
 
 # user chooses how large the grid of cells will be
 def size():
@@ -746,14 +1294,9 @@ def size():
     
     # list of choices
     choices = [("24", col_24),
-               ("30", col_30),
-               ("40", col_40),
                ("48", col_48),
-               ("60", col_60),
-               ("80", col_80),
                ("96", col_96),
                ("120", col_120),
-               ("160", col_160),
                ("192", col_192),
                ("240", col_240),
                ("Cancel", None)]
@@ -767,26 +1310,10 @@ def size():
 # resizes the grid to 24 columns
 def col_24():
     life_window.resize(24)
-
-# resizes the grid to 30 columns
-def col_30():
-    life_window.resize(30)
-    
-# resizes the grid to 40 columns
-def col_40():
-    life_window.resize(40)
     
 # resizes the grid to 48 columns
 def col_48():
     life_window.resize(48)
-    
-# resizes the grid to 60 columns
-def col_60():
-    life_window.resize(60)
-    
-# resizes the grid to 80 columns
-def col_80():
-    life_window.resize(80)
     
 # resizes the grid to 96 columns
 def col_96():
@@ -795,10 +1322,6 @@ def col_96():
 # resizes the grid to 120 columns
 def col_120():
     life_window.resize(120)
-    
-# resizes the grid to 160 columns
-def col_160():
-    life_window.resize(160)
     
 # resizes the grid to 192 columns
 def col_192():
@@ -809,6 +1332,11 @@ def col_240():
     life_window.resize(240)
 
 # ______________________________________________________________________________________________________________________
+
+
+# user may pause and play the propagation of generations
+def play_pause():
+    pass # TODO: Delete this line and finish the function
 
 
 # kills all cells
