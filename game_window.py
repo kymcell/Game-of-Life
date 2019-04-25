@@ -90,16 +90,11 @@ class game_window():
         
         # set new attributes
         RULES = new_params
-
-        #determine neighbors for all cells
-        for row in self.grid:
-            for cells in row:
-                cells.find_neighbors(self.grid)
         
         # call cell update
         for row in self.grid:
             for cell in row:
-                cell.update(RULES)
+                cell.update(RULES, self.grid)
     
     # resizes the grid to the user's choice
     def resize(self, columns):
@@ -120,6 +115,9 @@ class game_window():
 
         # create grid of cell objects
         self.grid = [[cell(self.image, i, j, self.cell_width, RULES) for i in range(cols)] for j in range(rows)]
+
+        # find the new neighbors
+        self.neighbor_finder()
     
     # activates the current cell when it is left-clicked
     def activate_cell(self, mouse_position):
@@ -159,3 +157,10 @@ class game_window():
         for row in self.grid:
             for cell in row:
                 cell.contents = 0
+
+    # find the neighbors for each cell
+    def neighbor_finder(self, NEIGHBORINO):
+        # determine neighbors for all cells
+        for row in self.grid:
+            for cells in row:
+                cells.find_neighbors(NEIGHBORINO)

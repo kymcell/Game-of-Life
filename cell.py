@@ -80,6 +80,8 @@ class cell():
         self.neighbors = []
         self.alive_neighbors = 0
         
+        self.neighbor_positions = []
+        
         # initialize surface
         self.surface = surface
         
@@ -117,7 +119,7 @@ class cell():
     
     
     # updates the cell
-    def update(self, ATTRIBUTES):
+    def update(self, ATTRIBUTES, grid):
         # import globals
         global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, RULESET, SCALE
         
@@ -134,47 +136,40 @@ class cell():
         # reset number of alive neighbors
         self.alive_neighbors = 0
         
-        # count up number of alive neighbors
-        for cells in self.neighbors:
-            if cells.contents == 1:
-                self.alive_neighbors += 1
+        # add neighbors to neighbor list
+        for neighbor in self.neighbor_positions:
+            try:
+                if grid[neighbor[1]][neighbor[0]].contents == 1:
+                    self.alive_neighbors += 1
+            except:
+                pass
     
     
     # determines the number of neighbors
-    def find_neighbors(self, grid):
-        # import globals
-        global NEIGHBORHOOD
-        
+    def find_neighbors(self, NEIGHBORINO):
         # create empty list
-        neighbor_positions = []
+        self.neighbor_positions = []
         
         # set user choice
-        user_neighborhood_choice = NEIGHBORHOOD
+        user_neighborhood_choice = NEIGHBORINO
         
         # sets neighbor_positions to the Moore Neighborhood
         if user_neighborhood_choice == "M":
-            neighbor_positions = moore()
+            self.neighbor_positions = moore()
         
         # sets neighbor_positions to the Von Neumann Neighborhood
         if user_neighborhood_choice == "VN":
-            neighbor_positions = neumann()
+            self.neighbor_positions = neumann()
         
         # determine positions of neighbors
-        for neighbor in neighbor_positions:
+        for neighbor in self.neighbor_positions:
             neighbor[0] += self.x_pos
             neighbor[1] += self.y_pos
         
         # fixes cells from bleeding over from the right side of the screen to the left side
-        for neighbor in neighbor_positions:
+        for neighbor in self.neighbor_positions:
             if neighbor[0] < 0:
                 neighbor[0] -= 1
-        
-        # add neighbors to neighbor list
-        for neighbor in neighbor_positions:
-            try:
-                self.neighbors.append(grid[neighbor[1]][neighbor[0]])
-            except:
-                pass
     
     
     # advances the state of the cell

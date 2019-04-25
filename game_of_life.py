@@ -397,6 +397,9 @@ def conway():
     STATES = range(2)
     NEIGHBORHOOD = "M"
 
+    # find the new neighbors
+    life_window.neighbor_finder(NEIGHBORHOOD)
+
     # make list of buttons to be inactive
     inactive_list = [neighborhood_button, survival_button, birth_button, states_button]
 
@@ -428,6 +431,9 @@ def brian():
     STATES = range(3)
     NEIGHBORHOOD = "M"
 
+    # find the new neighbors
+    life_window.neighbor_finder(NEIGHBORHOOD)
+
     # make list of buttons to be inactive
     inactive_list = [neighborhood_button, survival_button, birth_button, states_button]
 
@@ -452,6 +458,9 @@ def random_ruleset():
     
     # set name
     NAME = "Random Ruleset"
+
+    # find the new neighbors
+    life_window.neighbor_finder(NEIGHBORHOOD)
     
     # randomly pick the neighborhood
     option = randint(0, 1)
@@ -1237,10 +1246,13 @@ def neighborhood_info():
 
 def moore_neighborhood():
     # import globals
-    global NEIGHBORHOOD, survival_button, birth_button, states_button
+    global life_window, NEIGHBORHOOD, survival_button, birth_button, states_button
     
     # set neighborhood
     NEIGHBORHOOD = "M"
+    
+    # find the new neighbors
+    life_window.neighbor_finder(NEIGHBORHOOD)
     
     # make list of buttons to be active
     active_list = [survival_button, birth_button, states_button]
@@ -1254,7 +1266,7 @@ def moore_neighborhood():
 
 def neumann_neighborhood():
     # import globals
-    global SURVIVAL, BIRTH, NEIGHBORHOOD, survival_button, birth_button, states_button
+    global life_window, SURVIVAL, BIRTH, NEIGHBORHOOD, survival_button, birth_button, states_button
     
     # set neighborhood
     NEIGHBORHOOD = "VN"
@@ -1268,6 +1280,9 @@ def neumann_neighborhood():
             SURVIVAL.remove(value)
         if value in BIRTH:
             BIRTH.remove(value)
+
+    # find the new neighbors
+    life_window.neighbor_finder(NEIGHBORHOOD)
     
     # make list of buttons to be active
     active_list = [survival_button, birth_button, states_button]
