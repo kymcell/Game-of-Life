@@ -84,8 +84,6 @@ REFERENCES:
 # imports
 import thorpy
 from random import *
-from time import *
-
 from game_window import *
 
 
@@ -113,7 +111,11 @@ ________________________________________________________________________________
 # creates game window and grid of cells
 def world():
     # import globals
-    global RUNNING, MENU, life_window, box, survival_button, birth_button, states_button, neighborhood_button
+    global RUNNING, FPS, PAUSED, MENU, \
+        life_window, box, survival_button, birth_button, states_button, neighborhood_button, start_button
+    
+    # set clock
+    clock = pygame.time.Clock()
     
     # set size of the bar containing the buttons on the top of the screen
     y_offset = 200
@@ -166,7 +168,7 @@ def world():
     size_button = thorpy.make_button("Size", func=size)
     
     # button for starting and stopping propagation of cells
-    start_button = thorpy.make_button("Play/Pause", func=play_pause)
+    start_button = thorpy.make_button(" Play ", func=play_pause)
     
     # button for clearing the grid (kills all cells)
     reset_button = thorpy.make_button("Reset", func=reset)
@@ -262,10 +264,50 @@ def world():
     # while the program is running, continue updating the window
     while RUNNING:
         user_input(y_offset)
-        display()
-        update(display_box, label_list)
+        if PAUSED == True:
+            paused_display()
+            paused_update(display_box, label_list)
+        if PAUSED == False:
+            display()
+            update(display_box, label_list)
         pygame.display.update()
+        clock.tick(FPS)
     pygame.quit()
+
+
+# runs when the game is paused
+def paused_display():
+    # import globals
+    global life_window
+    
+    game_window.display(life_window)
+
+
+# runs when the game is paused
+def paused_update(display_box, label_list):
+    # import globals
+    global life_window, SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, RULESET, ATTRIBUTES
+    
+    # update ruleset
+    RULESET = (str(SURVIVAL) + " / " + str(BIRTH) + " / " + str(len(STATES)) + " / " + NEIGHBORHOOD)
+    
+    # update labels
+    label_list[0].set_text(NAME)
+    label_list[1].set_text("Survival: " + str(SURVIVAL))
+    label_list[2].set_text("Birth: " + str(BIRTH))
+    label_list[3].set_text("States: " + str(STATES))
+    label_list[4].set_text("Neighborhood: " + str(NEIGHBORHOOD))
+    label_list[5].set_text("Ruleset: " + str(RULESET))
+    
+    # update display_box
+    display_box.blit()
+    display_box.update()
+    
+    # update attribute list
+    ATTRIBUTES = [SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, RULESET]
+    
+    # update game_window
+    game_window.update(life_window, ATTRIBUTES)
 
 
 # displays the window
@@ -1354,7 +1396,17 @@ def col_240():
 
 # user may pause and play the propagation of generations
 def play_pause():
-    pass # TODO: Delete this line and finish the function
+    # import globals
+    global PAUSED, start_button
+    
+    # switch paused global
+    PAUSED = not PAUSED
+    
+    # switch text on button
+    if PAUSED == True:
+        start_button.set_text("Play")
+    if PAUSED == False:
+        start_button.set_text("Pause")
 
 
 # kills all cells
@@ -1394,9 +1446,13 @@ if __name__ == "__main__":
     
     # indicates how fast the generations progress
     SPEED = 0
+    FPS = 60
     
     # indicates if the program is currently running
     RUNNING = True
+    
+    # indicates if the program is paused
+    PAUSED = True
     
     # menu to be called from thorpy functions
     MENU = None
@@ -1412,6 +1468,7 @@ if __name__ == "__main__":
     birth_button = None
     states_button = None
     neighborhood_button = None
+    start_button = None
     
     # global booleans
     ruleset_selected = False
