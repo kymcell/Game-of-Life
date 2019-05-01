@@ -343,6 +343,7 @@ def update(display_box, label_list):
     
     # update game_window
     game_window.update(life_window, ATTRIBUTES)
+    game_window.evaluate(life_window)
 
 
 # determines when the user clicks the mouse or presses the ESC key to exit the program

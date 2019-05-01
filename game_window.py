@@ -17,6 +17,7 @@ WORLD:
 
 # imports
 from cell import *
+from copy import *
 
 class game_window():
     # class variables
@@ -131,7 +132,19 @@ class game_window():
         grid_position[1] = ( grid_position[1] - self.y_offset ) / self.cell_width
         
         # changes cell to be alive
-        self.grid[grid_position[1]][grid_position[0]].contents = 1
+        if self.grid[grid_position[1]][grid_position[0]].contents == 0:
+            self.grid[grid_position[1]][grid_position[0]].contents = 1
+        # TODO: Fix clicking to advance states
+        '''
+        # advances state of cell
+        else:
+            # if the cell has reached the last state, the cell dies
+            if self.grid[grid_position[1]][grid_position[0]].contents.contents == RULES[2][-1]:
+                self.grid[grid_position[1]][grid_position[0]].contents.contents = 0
+            # otherwise, the cell continues to the next state
+            else:
+                self.grid[grid_position[1]][grid_position[0]].contents.change_state()
+        '''
 
 
     # kills the current cell when it is right-clicked
@@ -170,24 +183,35 @@ class game_window():
         # import globals
         global RULES
         
-        # create new grid
-        new_grid = [[cell(self.image, i, j, self.cell_width, RULES) for i in range(self.cols)] for j in range(self.rows)]
+        # create new grid as copy of old grid
+        new_grid = copy(self.grid)
         
         # constitutes cell logic, determines which cells will be alive or dead in the next generation
         for y_idx, row in enumerate(self.grid):
             for x_idx, cells in enumerate(row):
                 # tracks whether the cell died this generation
                 recently_dead = False
-                # TODO: Make cells begin dying process rather than immediately killing them off
-                # if the cell is set to always die, the cell dies
-                if RULES[0] == [0]:
-                    new_grid[y_idx][x_idx].contents = 0
+                
+                # tracks whether the cell changed state this generation
+                state_changed = False
+                
+                # if the cell is alive and set to always die, the cell dies
+                if RULES[0] == [0] and cells.contents == 1:
+                    if len(RULES[2]) != 2:
+                        new_grid[y_idx][x_idx].change_state()
+                    else:
+                        new_grid[y_idx][x_idx].contents = 0
                     recently_dead = True
+                    state_changed = True
                 
                 # if the cell is alive but does not have sufficient neighbors, or too many neighbors, the cell dies
                 if cells.alive_neighbors not in RULES[0] and cells.contents == 1 and recently_dead == False:
-                    new_grid[y_idx][x_idx].contents = 0
+                    if len(RULES[2]) != 2:
+                        new_grid[y_idx][x_idx].change_state()
+                    else:
+                        new_grid[y_idx][x_idx].contents = 0
                     recently_dead = True
+                    state_changed = True
                 
                 # if the cell is alive and has sufficient neighbors, the cell stays alive
                 if cells.alive_neighbors in RULES[0] and cells.contents == 1:
@@ -198,13 +222,13 @@ class game_window():
                     new_grid[y_idx][x_idx].contents = 1
                 
                 # if the cell is in the dying phase, advance the state of the cell
-                if cells.contents != 0 and cells.contents != 1:
+                if cells.contents != 0 and cells.contents != 1 and state_changed == False:
                     # if the cell has reached the last state, the cell dies
                     if cells.contents == RULES[2][-1]:
-                        cells.contents = 0
+                        new_grid[y_idx][x_idx].contents = 0
                     # otherwise, the cell continues to the next state
                     else:
-                        cells.change_state()
+                        new_grid[y_idx][x_idx].change_state()
         
         # set old grid to the new grid
         self.grid = new_grid
