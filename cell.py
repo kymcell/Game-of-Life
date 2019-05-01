@@ -106,6 +106,38 @@ class cell():
         if self.contents == 1:
             self.image.fill( (0, 0, 0) )
         
+        # if the cell is dying, fill the cell with a unique color
+        if self.contents == 2:
+            self.image.fill( (255, 199, 56) )
+        # TODO: Set unique colors
+        # if the cell is dying, fill the cell with a unique color
+        if self.contents == 3:
+            self.image.fill((0, 0, 0))
+        
+        # if the cell is dying, fill the cell with a unique color
+        if self.contents == 4:
+            self.image.fill((0, 0, 0))
+        
+        # if the cell is dying, fill the cell with a unique color
+        if self.contents == 5:
+            self.image.fill((0, 0, 0))
+        
+        # if the cell is dying, fill the cell with a unique color
+        if self.contents == 6:
+            self.image.fill((0, 0, 0))
+        
+        # if the cell is dying, fill the cell with a unique color
+        if self.contents == 7:
+            self.image.fill((0, 0, 0))
+        
+        # if the cell is dying, fill the cell with a unique color
+        if self.contents == 8:
+            self.image.fill((0, 0, 0))
+        
+        # if the cell is dying, fill the cell with a unique color
+        if self.contents == 9:
+            self.image.fill((0, 0, 0))
+        
         # if the cell is not alive, draw border around cell
         else:
             # set RGB color for borders on grid
@@ -174,11 +206,5 @@ class cell():
     
     # advances the state of the cell
     def change_state(self):
-        # import globals
-        global STATES
-    
-    
-    # births the cell
-    def birth(self):
-        # import globals
-        global BIRTH
+        # increment the state of the cell
+        self.contents += 1

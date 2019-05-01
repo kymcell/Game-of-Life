@@ -1397,7 +1397,7 @@ def col_240():
 # user may pause and play the propagation of generations
 def play_pause():
     # import globals
-    global PAUSED, start_button
+    global PAUSED, start_button, box
     
     # switch paused global
     PAUSED = not PAUSED
@@ -1407,6 +1407,9 @@ def play_pause():
         start_button.set_text("Play")
     if PAUSED == False:
         start_button.set_text("Pause")
+    
+    # blit button to screen
+    box.blit()
 
 
 # kills all cells

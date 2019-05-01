@@ -54,16 +54,16 @@ class game_window():
         
         # set columns, must be one of the following options for 1920x1080 resolution screen:
         # cols = 24, 48, 96, 120, 192, 240
-        cols = 96
+        self.cols = 96
         
         # sets the number of rows, ensuring there are enough to reach the bottom of the screen
-        rows = cols * self.height / self.width + 1
+        self.rows = self.cols * self.height / self.width + 1
         
         # get cell_width
-        self.cell_width = self.width / cols
+        self.cell_width = self.width / self.cols
         
         # create grid of cell objects
-        self.grid = [ [cell(self.image, i, j, self.cell_width, ATTRIBUTES) for i in range(cols) ] for j in range(rows) ]
+        self.grid = [ [cell(self.image, i, j, self.cell_width, ATTRIBUTES) for i in range(self.cols) ] for j in range(self.rows) ]
     
     
     # displays the window and cells
@@ -105,19 +105,19 @@ class game_window():
         self.reset()
         
         # set number of columns
-        cols = columns
+        self.cols = columns
         
         # sets the number of rows, ensuring there are enough to reach the bottom of the screen
-        rows = cols * self.height / self.width + 1
+        self.rows = self.cols * self.height / self.width + 1
         
         # get cell_width
-        self.cell_width = self.width / cols
+        self.cell_width = self.width / self.cols
 
         # create grid of cell objects
-        self.grid = [[cell(self.image, i, j, self.cell_width, RULES) for i in range(cols)] for j in range(rows)]
-
+        self.grid = [[cell(self.image, i, j, self.cell_width, RULES) for i in range(self.cols)] for j in range(self.rows)]
+        
         # find the new neighbors
-        self.neighbor_finder()
+        self.neighbor_finder(RULES[3])
     
     # activates the current cell when it is left-clicked
     def activate_cell(self, mouse_position):
@@ -164,3 +164,47 @@ class game_window():
         for row in self.grid:
             for cells in row:
                 cells.find_neighbors(NEIGHBORINO)
+    
+    # holds cell logic, evaluates all cells to determine which cells will be alive or dead in the next generation
+    def evaluate(self):
+        # import globals
+        global RULES
+        
+        # create new grid
+        new_grid = [[cell(self.image, i, j, self.cell_width, RULES) for i in range(self.cols)] for j in range(self.rows)]
+        
+        # constitutes cell logic, determines which cells will be alive or dead in the next generation
+        for y_idx, row in enumerate(self.grid):
+            for x_idx, cells in enumerate(row):
+                # tracks whether the cell died this generation
+                recently_dead = False
+                # TODO: Make cells begin dying process rather than immediately killing them off
+                # if the cell is set to always die, the cell dies
+                if RULES[0] == [0]:
+                    new_grid[y_idx][x_idx].contents = 0
+                    recently_dead = True
+                
+                # if the cell is alive but does not have sufficient neighbors, or too many neighbors, the cell dies
+                if cells.alive_neighbors not in RULES[0] and cells.contents == 1 and recently_dead == False:
+                    new_grid[y_idx][x_idx].contents = 0
+                    recently_dead = True
+                
+                # if the cell is alive and has sufficient neighbors, the cell stays alive
+                if cells.alive_neighbors in RULES[0] and cells.contents == 1:
+                    new_grid[y_idx][x_idx].contents = 1
+                
+                # if the cell is dead and has sufficient neighbors, the cell comes alive
+                if cells.alive_neighbors in RULES[1] and cells.contents == 0 and recently_dead == False:
+                    new_grid[y_idx][x_idx].contents = 1
+                
+                # if the cell is in the dying phase, advance the state of the cell
+                if cells.contents != 0 and cells.contents != 1:
+                    # if the cell has reached the last state, the cell dies
+                    if cells.contents == RULES[2][-1]:
+                        cells.contents = 0
+                    # otherwise, the cell continues to the next state
+                    else:
+                        cells.change_state()
+        
+        # set old grid to the new grid
+        self.grid = new_grid
