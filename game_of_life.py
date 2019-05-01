@@ -160,15 +160,15 @@ def world():
 
     # spacing button that will never be used
     spacing_button_02 = thorpy.make_button("Space")
-    
-    # button for selecting how fast the cells will propagate
-    speed_button = thorpy.make_button("Speed", func=speed)
 
     # button for selecting how large the grid of cells will be
     size_button = thorpy.make_button("Size", func=size)
     
     # button for starting and stopping propagation of cells
     start_button = thorpy.make_button(" Play ", func=play_pause)
+    
+    # set start button color
+    start_button.set_font_color( (0, 0, 255) )
     
     # button for clearing the grid (kills all cells)
     reset_button = thorpy.make_button("Reset", func=reset)
@@ -199,7 +199,6 @@ def world():
                                   states_button,
                                   neighborhood_button,
                                   spacing_button_02,
-                                  speed_button,
                                   size_button,
                                   start_button,
                                   reset_button] )
@@ -401,6 +400,9 @@ ________________________________________________________________________________
 
 # user chooses which ruleset will be used
 def rules():
+    # pause propagation
+    pause()
+    
     # list of choices
     choices = [("Conway's Game of Life", conway),
                ("Brian's Brain", brian),
@@ -608,7 +610,10 @@ ________________________________________________________________________________
 
 # user chooses which seed will be used
 def seed():
-    pass
+    # pause propagation
+    pause()
+    
+    # TODO: Finish this function and other choices
 
 
 # randomly fills the world with alive and dead cells
@@ -626,6 +631,9 @@ ________________________________________________________________________________
 def survival():
     # import globals
     global NEIGHBORHOOD
+
+    # pause propagation
+    pause()
     
     # list of choices
     choices = []
@@ -899,6 +907,9 @@ ________________________________________________________________________________
 def birth():
     # import globals
     global NEIGHBORHOOD
+
+    # pause propagation
+    pause()
     
     # list of choices
     choices = []
@@ -1146,6 +1157,9 @@ ________________________________________________________________________________
 
 # user chooses how many states each cell will have
 def states():
+    # pause propagation
+    pause()
+    
     # list of choices
     choices = [(" 2 ", sta_2),
                (" 3 ", sta_3),
@@ -1265,6 +1279,9 @@ ________________________________________________________________________________
 
 # user chooses neighborhood
 def neighborhood():
+    # pause propagation
+    pause()
+    
     # list of choices
     choices = [("Moore Neighborhood (M)", moore_neighborhood),
                ("Von Neumann Neighborhood (VN)", neumann_neighborhood),
@@ -1343,15 +1360,13 @@ ________________________________________________________________________________
 ________________________________________________________________________________________________________________________
 '''
 
-# user chooses how fast the generations will propagate
-def speed():
-    pass # TODO: Delete this line and finish the function
-
-
 # user chooses how large the grid of cells will be
 def size():
     # import globals
     global life_window
+    
+    # pause propagation
+    pause()
     
     # list of choices
     choices = [("24", col_24),
@@ -1371,23 +1386,23 @@ def size():
 # resizes the grid to 24 columns
 def col_24():
     life_window.resize(24)
-    
+
 # resizes the grid to 48 columns
 def col_48():
     life_window.resize(48)
-    
+
 # resizes the grid to 96 columns
 def col_96():
     life_window.resize(96)
-    
+
 # resizes the grid to 120 columns
 def col_120():
     life_window.resize(120)
-    
+
 # resizes the grid to 192 columns
 def col_192():
     life_window.resize(192)
-    
+
 # resizes the grid to 240 columns
 def col_240():
     life_window.resize(240)
@@ -1406,12 +1421,29 @@ def play_pause():
     # switch text on button
     if PAUSED == True:
         start_button.set_text("Play")
+        start_button.set_font_color( (0, 0, 255) )
     if PAUSED == False:
         start_button.set_text("Pause")
+        start_button.set_font_color( (255, 0, 0) )
     
     # blit button to screen
     box.blit()
 
+# pause propagation
+def pause():
+    # import globals
+    global PAUSED
+    
+    # set paused global
+    PAUSED = True
+
+    # switch text on button
+    if PAUSED == True:
+        start_button.set_text("Play")
+        start_button.set_font_color( (0, 0, 255) )
+
+    # blit button to screen
+    box.blit()
 
 # kills all cells
 def reset():
@@ -1421,10 +1453,29 @@ def reset():
     # call the life_window reset function
     life_window.reset()
 
+# kills cells that are not part of the current ruleset
+def equalize():
+    # import globals
+    global life_window
+    
+    # call the life_window reset function
+    life_window.equalize()
+
 
 '''
 ________________________________________________________________________________________________________________________
                                                 START OF PROGRAM
+# TODO:
+Make play button invisible when a full ruleset is not selected (use global booleans)
+Get rid of cells that are not part of the current ruleset (in a different state)
+Fix cells from bleeding over the edges of the screen (left, top, bottom)
+Create seed choices window
+
+Kyle and Garrett:
+Create seeds for all rulesets
+Add additional rulesets
+Create presentation
+Create README.txt
 ________________________________________________________________________________________________________________________
 '''
 
@@ -1445,11 +1496,7 @@ if __name__ == "__main__":
     # place all cell attributes into a list
     ATTRIBUTES = [SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, RULESET]
     
-    # indicates the number of generations
-    GENERATION = 0
-    
     # indicates how fast the generations progress
-    SPEED = 0
     FPS = 60
     
     # indicates if the program is currently running
