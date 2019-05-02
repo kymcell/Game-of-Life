@@ -137,12 +137,15 @@ class game_window():
         
         # advances state of cell
         else:
-            # if the cell has reached the last state, the cell dies
-            if self.grid[grid_position[1]][grid_position[0]].contents == RULES[2][-1]:
-                self.grid[grid_position[1]][grid_position[0]].contents = 0
-            # otherwise, the cell continues to the next state
-            else:
-                self.grid[grid_position[1]][grid_position[0]].change_state()
+            try:
+                # if the cell has reached the last state, the cell dies
+                if self.grid[grid_position[1]][grid_position[0]].contents == RULES[2][-1]:
+                    self.grid[grid_position[1]][grid_position[0]].contents = 0
+                # otherwise, the cell continues to the next state
+                else:
+                    self.grid[grid_position[1]][grid_position[0]].change_state()
+            except:
+                pass
 
 
     # kills the current cell when it is right-clicked
@@ -167,17 +170,19 @@ class game_window():
                 cell.contents = 0
 
     # kills cells that are not part of the current ruleset
-    def equalize(self):
-        # TODO: Write this
+    def equalize(self, cell_states):
         # iterate through every cell and kill the ones not part of the current ruleset
-        pass
+        for row in self.grid:
+            for cells in row:
+                if cells.contents not in cell_states:
+                    cells.contents = 0
 
     # find the neighbors for each cell
     def neighbor_finder(self, NEIGHBORINO):
         # determine neighbors for all cells
         for row in self.grid:
             for cells in row:
-                cells.find_neighbors(NEIGHBORINO)
+                cells.find_neighbors(NEIGHBORINO, self.cols, self.rows)
     
     # holds cell logic, evaluates all cells to determine which cells will be alive or dead in the next generation
     def evaluate(self):

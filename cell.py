@@ -178,7 +178,7 @@ class cell():
     
     
     # determines the number of neighbors
-    def find_neighbors(self, NEIGHBORINO):
+    def find_neighbors(self, NEIGHBORINO, columns, rows):
         # create empty list
         self.neighbor_positions = []
         
@@ -198,10 +198,16 @@ class cell():
             neighbor[0] += self.x_pos
             neighbor[1] += self.y_pos
         
-        # fixes cells from bleeding over from the right side of the screen to the left side
+        # fixes cells from bleeding over from the edges of the screen
         for neighbor in self.neighbor_positions:
             if neighbor[0] < 0:
-                neighbor[0] -= 1
+                neighbor[0] += columns
+            if neighbor[0] > columns - 1:
+                neighbor[0] -= columns
+            if neighbor[1] > rows - 1:
+                neighbor[1] -= rows
+        
+        
     
     
     # advances the state of the cell
