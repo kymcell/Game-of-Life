@@ -419,6 +419,13 @@ def rules():
     # list of choices
     choices = [("Conway's Game of Life", conway),
                ("Brian's Brain", brian),
+               ('Maze', maze),
+               ('Gnarl', gnarl),
+               ('Assimilation', assimilation),
+               ('BelZhab', belzhab),
+               ('Bombers', bombers),
+               ('Fireworks', fireworks),
+               ('Snake', snake),
                ("Custom", custom),
                ("Information", ruleset_info),
                ("Cancel", None)]
@@ -528,6 +535,306 @@ def brian():
         box.update()
 
 
+def maze():
+    # import globals
+    global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, NAME, \
+        survival_button, birth_button, states_button, neighborhood_button, \
+        survival_selected, birth_selected, states_selected, neighborhood_selected
+
+    # set name
+    NAME = "Maze"
+
+    # define rules
+    SURVIVAL = [1,2,3,4,5]
+    BIRTH = [3]
+    STATES = range(2)
+    NEIGHBORHOOD = "M"
+
+    # find the new neighbors
+    life_window.neighbor_finder(NEIGHBORHOOD)
+
+    # kill cells that are not part of the current ruleset
+    life_window.equalize(STATES)
+
+    # set global booleans
+    survival_selected = True
+    birth_selected = True
+    states_selected = True
+    neighborhood_selected = True
+
+    # make list of buttons to be inactive
+    inactive_list = [neighborhood_button, survival_button, birth_button, states_button]
+
+    # make other buttons inactive
+    for button in inactive_list:
+        button.set_active(False)
+        button.set_visible(False)
+        button.blit()
+        box.blit()
+        box.blit()
+        box.blit()
+        box.blit()
+        box.blit()
+        box.update()
+
+
+def gnarl():
+    # import globals
+    global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, NAME, \
+        survival_button, birth_button, states_button, neighborhood_button, \
+        survival_selected, birth_selected, states_selected, neighborhood_selected
+
+    # set name
+    NAME = "Gnarl"
+
+    # define rules
+    SURVIVAL = [1]
+    BIRTH = [1]
+    STATES = range(2)
+    NEIGHBORHOOD = "M"
+
+    # find the new neighbors
+    life_window.neighbor_finder(NEIGHBORHOOD)
+
+    # kill cells that are not part of the current ruleset
+    life_window.equalize(STATES)
+
+    # set global booleans
+    survival_selected = True
+    birth_selected = True
+    states_selected = True
+    neighborhood_selected = True
+
+    # make list of buttons to be inactive
+    inactive_list = [neighborhood_button, survival_button, birth_button, states_button]
+
+    # make other buttons inactive
+    for button in inactive_list:
+        button.set_active(False)
+        button.set_visible(False)
+        button.blit()
+        box.blit()
+        box.blit()
+        box.blit()
+        box.blit()
+        box.blit()
+        box.update()
+
+
+def assimilation():
+    # import globals
+    global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, NAME, \
+        survival_button, birth_button, states_button, neighborhood_button, \
+        survival_selected, birth_selected, states_selected, neighborhood_selected
+
+    # set name
+    NAME = "Assimilation"
+
+    # define rules
+    SURVIVAL = [4,5,6,7]
+    BIRTH = [3,4,5]
+    STATES = range(2)
+    NEIGHBORHOOD = "M"
+
+    # find the new neighbors
+    life_window.neighbor_finder(NEIGHBORHOOD)
+
+    # kill cells that are not part of the current ruleset
+    life_window.equalize(STATES)
+
+    # set global booleans
+    survival_selected = True
+    birth_selected = True
+    states_selected = True
+    neighborhood_selected = True
+
+    # make list of buttons to be inactive
+    inactive_list = [neighborhood_button, survival_button, birth_button, states_button]
+
+    # make other buttons inactive
+    for button in inactive_list:
+        button.set_active(False)
+        button.set_visible(False)
+        button.blit()
+        box.blit()
+        box.blit()
+        box.blit()
+        box.blit()
+        box.blit()
+        box.update()
+
+
+def belzhab():
+    # import globals
+    global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, NAME, \
+        survival_button, birth_button, states_button, neighborhood_button, \
+        survival_selected, birth_selected, states_selected, neighborhood_selected
+
+    # set name
+    NAME = "BelZhab"
+
+    # define rules
+    SURVIVAL = [2,3]
+    BIRTH = [2,3]
+    STATES = range(8)
+    NEIGHBORHOOD = "M"
+
+    # find the new neighbors
+    life_window.neighbor_finder(NEIGHBORHOOD)
+
+    # kill cells that are not part of the current ruleset
+    life_window.equalize(STATES)
+
+    # set global booleans
+    survival_selected = True
+    birth_selected = True
+    states_selected = True
+    neighborhood_selected = True
+
+    # make list of buttons to be inactive
+    inactive_list = [neighborhood_button, survival_button, birth_button, states_button]
+
+    # make other buttons inactive
+    for button in inactive_list:
+        button.set_active(False)
+        button.set_visible(False)
+        button.blit()
+        box.blit()
+        box.blit()
+        box.blit()
+        box.blit()
+        box.blit()
+        box.update()
+
+def bombers():
+    # import globals
+    global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, NAME, \
+        survival_button, birth_button, states_button, neighborhood_button, \
+        survival_selected, birth_selected, states_selected, neighborhood_selected
+
+    # set name
+    NAME = "Bombers"
+
+    # define rules
+    SURVIVAL = [3,4,5]
+    BIRTH = [2,4]
+    STATES = range(10)
+    NEIGHBORHOOD = "M"
+
+    # find the new neighbors
+    life_window.neighbor_finder(NEIGHBORHOOD)
+
+    # kill cells that are not part of the current ruleset
+    life_window.equalize(STATES)
+
+    # set global booleans
+    survival_selected = True
+    birth_selected = True
+    states_selected = True
+    neighborhood_selected = True
+
+    # make list of buttons to be inactive
+    inactive_list = [neighborhood_button, survival_button, birth_button, states_button]
+
+    # make other buttons inactive
+    for button in inactive_list:
+        button.set_active(False)
+        button.set_visible(False)
+        button.blit()
+        box.blit()
+        box.blit()
+        box.blit()
+        box.blit()
+        box.blit()
+        box.update()
+
+
+def fireworks():
+    # import globals
+    global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, NAME, \
+        survival_button, birth_button, states_button, neighborhood_button, \
+        survival_selected, birth_selected, states_selected, neighborhood_selected
+
+    # set name
+    NAME = "Fireworks"
+
+    # define rules
+    SURVIVAL = [2]
+    BIRTH = [1,3]
+    STATES = range(4)
+    NEIGHBORHOOD = "M"
+
+    # find the new neighbors
+    life_window.neighbor_finder(NEIGHBORHOOD)
+
+    # kill cells that are not part of the current ruleset
+    life_window.equalize(STATES)
+
+    # set global booleans
+    survival_selected = True
+    birth_selected = True
+    states_selected = True
+    neighborhood_selected = True
+
+    # make list of buttons to be inactive
+    inactive_list = [neighborhood_button, survival_button, birth_button, states_button]
+
+    # make other buttons inactive
+    for button in inactive_list:
+        button.set_active(False)
+        button.set_visible(False)
+        button.blit()
+        box.blit()
+        box.blit()
+        box.blit()
+        box.blit()
+        box.blit()
+        box.update()
+
+
+def snake():
+    # import globals
+    global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, NAME, \
+        survival_button, birth_button, states_button, neighborhood_button, \
+        survival_selected, birth_selected, states_selected, neighborhood_selected
+
+    # set name
+    NAME = "Snake"
+
+    # define rules
+    SURVIVAL = [0,3,4,6,7]
+    BIRTH = [2,5]
+    STATES = range(6)
+    NEIGHBORHOOD = "M"
+
+    # find the new neighbors
+    life_window.neighbor_finder(NEIGHBORHOOD)
+
+    # kill cells that are not part of the current ruleset
+    life_window.equalize(STATES)
+
+    # set global booleans
+    survival_selected = True
+    birth_selected = True
+    states_selected = True
+    neighborhood_selected = True
+
+    # make list of buttons to be inactive
+    inactive_list = [neighborhood_button, survival_button, birth_button, states_button]
+
+    # make other buttons inactive
+    for button in inactive_list:
+        button.set_active(False)
+        button.set_visible(False)
+        button.blit()
+        box.blit()
+        box.blit()
+        box.blit()
+        box.blit()
+        box.blit()
+        box.update()
+
+
 # generates random values for Survival / Birth / States / Neighboorhood
 def random_ruleset():
     # import globals
@@ -583,19 +890,19 @@ def random_ruleset():
     
     # randomly pick STATES values
     STATES = range(randint(2, 10))
-
+    
     # make list of buttons to be inactive
     inactive_list = [neighborhood_button, survival_button, birth_button, states_button]
-
+    
     # kill cells that are not part of the current ruleset
     life_window.equalize(STATES)
-
+    
     # set global booleans
     survival_selected = True
     birth_selected = True
     states_selected = True
     neighborhood_selected = True
-
+    
     # make other buttons inactive
     for button in inactive_list:
         button.set_active(False)
