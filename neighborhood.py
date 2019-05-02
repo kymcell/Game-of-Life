@@ -17,9 +17,10 @@ NEIGHBORHOOD:
             Domain: {1,2,3,4,5,6,7,8}
         Von Neumann Neighborhood (VN): Only the 4 cells surrounding the central cell orthogonally
             Domain: {1,2,3,4}
-
-NOTE:
-    A domain of 0 is allowed for the Survival value, this means that a living cell will always die in the next generation
+    
+    An additional neighborhood has been added:
+        Engholdt Neighborhood (E): Only the 4 cells surrounding the central cell diagonally
+            Domain: {1,2,3,4}
 '''
 
 # defines the Moore Neighborhood
@@ -36,3 +37,11 @@ def neumann():
     neumann_neighbors = [ [0, 1], [0, -1], [1, 0], [-1, 0] ]
     
     return neumann_neighbors
+
+
+# defines the Engholdt Neighborhood
+def engholdt():
+    # neighbor positions relative to the current cell centereed at [x, y] of [0, 0]
+    engholdt_neighbors = [[1, 1], [1, -1], [-1, -1], [-1, 1]]
+    
+    return engholdt_neighbors

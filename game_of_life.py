@@ -3,7 +3,8 @@
 # Semester Project
 #
 # There are infinite possibilities within the realm of cellular automata.
-# This program seeks to emulate many of those possibilities through completely customizable parameters and a user friendly GUI.
+# This program seeks to emulate many of those possibilities through
+# completely customizable parameters and a user friendly GUI.
 #
 # Authors: Kaelan Engholdt, Garrett Kern, Kyle McElligott
 # Start Date: 2/25/2019
@@ -66,6 +67,10 @@ NEIGHBORHOOD:
             Domain: {1,2,3,4,5,6,7,8}
         Von Neumann Neighborhood (VN): Only the 4 cells surrounding the central cell orthogonally
             Domain: {1,2,3,4}
+    
+    An additional neighborhood has been added:
+        Engholdt Neighborhood (E): Only the 4 cells surrounding the central cell diagonally
+            Domain: {1,2,3,4}
 
 NOTE:
     A domain of 0 is allowed for the Survival value, this means that a living cell will always die in the next generation
@@ -95,7 +100,7 @@ def main():
     # initialize pygame
     pygame.init()
     
-    # create fullscreen window
+    # create fullscreen window and initialize buttons, begin main loop
     world()
 
 
@@ -108,9 +113,8 @@ ________________________________________________________________________________
 # creates game window and grid of cells
 def world():
     # import globals
-    global RUNNING, FPS, PAUSED, MENU, \
-        life_window, box, survival_button, birth_button, states_button, neighborhood_button, start_button, \
-        seed_button, ruleset_selected, survival_selected, birth_selected, states_selected, neighborhood_selected
+    global RUNNING, FPS, PAUSED, MENU, life_window, box, \
+        survival_button, birth_button, states_button, neighborhood_button, start_button, seed_button
     
     # set clock
     clock = pygame.time.Clock()
@@ -251,6 +255,8 @@ def world():
     
     # set the position of the box
     box.set_topleft((width / 20, y_offset / 4))
+    
+    # blit and update the box
     box.blit()
     box.blit()
     box.blit()
@@ -258,34 +264,83 @@ def world():
     box.update()
     # __________________________________________________________________________________________________________________
     
-    # while the program is running, continue updating the window (this is the main loop)
+    # while the program is running, run this main loop
     while RUNNING:
+        # get user input from the mouse and keyboard
         user_input(y_offset)
-        if survival_selected and birth_selected and states_selected and neighborhood_selected:
-            ruleset_selected = True
-        else:
-            ruleset_selected = False
-        if ruleset_selected == True:
-            start_button.set_visible(True)
-            start_button.set_active(True)
-            seed_button.set_visible(True)
-            seed_button.set_active(True)
-        else:
-            start_button.set_visible(False)
-            start_button.set_visible(False)
-            seed_button.set_visible(False)
-            seed_button.set_visible(False)
+        
+        # determine seed and play button visibility
+        determine_progress()
+        
+        # determine which display and update functions to run
         if PAUSED == True:
             paused_display()
             paused_update(display_box, label_list)
         if PAUSED == False:
             display()
             update(display_box, label_list)
+        
+        # pygame updates
         pygame.display.update()
+        
+        # clock ticks
         clock.tick(FPS)
+        
+        # blit and update the box
         box.blit()
         box.update()
+    
+    # once the main loop ends, pygame quits
     pygame.quit()
+
+
+# sets global booleans and determines seed and play button visibility
+def determine_progress():
+    # import globals
+    global ruleset_selected, survival_selected, birth_selected, states_selected, neighborhood_selected, \
+           SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, start_button, seed_button
+    
+    # check if survival is filled
+    if len(SURVIVAL) != 0:
+        survival_selected = True
+    else:
+        survival_selected = False
+    
+    # check if birth is filled
+    if len(BIRTH) != 0:
+        birth_selected = True
+    else:
+        birth_selected = False
+    
+    # check if states are filled
+    if len(STATES) != 0:
+        states_selected = True
+    else:
+        states_selected = False
+    
+    # check if the neighborhood is filled
+    if NEIGHBORHOOD != "None":
+        neighborhood_selected = True
+    else:
+        neighborhood_selected = False
+    
+    # if all components of the ruleset are filled, then the ruleset is valid
+    if survival_selected and birth_selected and states_selected and neighborhood_selected:
+        ruleset_selected = True
+    else:
+        ruleset_selected = False
+    
+    # make play and seed buttons visible once a valid ruleset exists
+    if ruleset_selected == True:
+        start_button.set_visible(True)
+        start_button.set_active(True)
+        seed_button.set_visible(True)
+        seed_button.set_active(True)
+    else:
+        start_button.set_visible(False)
+        start_button.set_active(False)
+        seed_button.set_visible(False)
+        seed_button.set_active(False)
 
 
 # runs when the game is paused
@@ -293,6 +348,7 @@ def paused_display():
     # import globals
     global life_window
     
+    # display the game_window
     game_window.display(life_window)
 
 
@@ -328,6 +384,7 @@ def display():
     # import globals
     global life_window
     
+    # display the game_window
     game_window.display(life_window)
 
 
@@ -420,13 +477,13 @@ def rules():
     # list of choices
     choices = [("Conway's Game of Life", conway),
                ("Brian's Brain", brian),
-               ('Maze', maze),
-               ('Gnarl', gnarl),
-               ('Assimilation', assimilation),
-               ('BelZhab', belzhab),
-               ('Bombers', bombers),
-               ('Fireworks', fireworks),
-               ('Snake', snake),
+               ("Maze", maze),
+               ("Gnarl", gnarl),
+               ("Assimilation", assimilation),
+               ("BelZhab", belzhab),
+               ("Bombers", bombers),
+               ("Fireworks", fireworks),
+               ("SoftFreeze", softfreeze),
                ("Custom", custom),
                ("Information", ruleset_info),
                ("Cancel", None)]
@@ -434,6 +491,8 @@ def rules():
     # launches choice window
     thorpy.launch_blocking_choices("Select a ruleset to be used:\n", choices)
 
+
+# gives ruleset information
 def ruleset_info():
     # launch info window
     thorpy.launch_nonblocking_alert("RULESETS:\n",
@@ -448,12 +507,13 @@ def ruleset_info():
                                  "Utilizes the Moore neighborhood.\n")
 
 
+# ruleset functions
+# ______________________________________________________________________________________________________________________
 # Conway's Game of Life Ruleset: [2, 3] / [3] / 2 / M
 def conway():
     # import globals
     global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, NAME, \
-        survival_button, birth_button, states_button, neighborhood_button, \
-        survival_selected, birth_selected, states_selected, neighborhood_selected
+        survival_button, birth_button, states_button, neighborhood_button
     
     # set name
     NAME = "Conway's Game of Life"
@@ -469,12 +529,6 @@ def conway():
 
     # kill cells that are not part of the current ruleset
     life_window.equalize(STATES)
-
-    # set global booleans
-    survival_selected = True
-    birth_selected = True
-    states_selected = True
-    neighborhood_selected = True
     
     # make list of buttons to be inactive
     inactive_list = [neighborhood_button, survival_button, birth_button, states_button]
@@ -496,8 +550,7 @@ def conway():
 def brian():
     # import globals
     global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, NAME, \
-        survival_button, birth_button, states_button, neighborhood_button, \
-        survival_selected, birth_selected, states_selected, neighborhood_selected
+        survival_button, birth_button, states_button, neighborhood_button
     
     # set name
     NAME = "Brian's Brain"
@@ -513,12 +566,6 @@ def brian():
     
     # kill cells that are not part of the current ruleset
     life_window.equalize(STATES)
-
-    # set global booleans
-    survival_selected = True
-    birth_selected = True
-    states_selected = True
-    neighborhood_selected = True
     
     # make list of buttons to be inactive
     inactive_list = [neighborhood_button, survival_button, birth_button, states_button]
@@ -536,36 +583,30 @@ def brian():
         box.update()
 
 
+# Maze Ruleset: [1, 2, 3, 4, 5] / [3] / 2 / M
 def maze():
     # import globals
     global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, NAME, \
-        survival_button, birth_button, states_button, neighborhood_button, \
-        survival_selected, birth_selected, states_selected, neighborhood_selected
-
+        survival_button, birth_button, states_button, neighborhood_button
+    
     # set name
     NAME = "Maze"
-
+    
     # define rules
-    SURVIVAL = [1,2,3,4,5]
+    SURVIVAL = [1, 2, 3, 4, 5]
     BIRTH = [3]
     STATES = range(2)
     NEIGHBORHOOD = "M"
-
+    
     # find the new neighbors
     life_window.neighbor_finder(NEIGHBORHOOD)
-
+    
     # kill cells that are not part of the current ruleset
     life_window.equalize(STATES)
-
-    # set global booleans
-    survival_selected = True
-    birth_selected = True
-    states_selected = True
-    neighborhood_selected = True
-
+    
     # make list of buttons to be inactive
     inactive_list = [neighborhood_button, survival_button, birth_button, states_button]
-
+    
     # make other buttons inactive
     for button in inactive_list:
         button.set_active(False)
@@ -579,36 +620,30 @@ def maze():
         box.update()
 
 
+# Gnarl Ruleset: [1] / [1] / 2 / M
 def gnarl():
     # import globals
     global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, NAME, \
-        survival_button, birth_button, states_button, neighborhood_button, \
-        survival_selected, birth_selected, states_selected, neighborhood_selected
-
+        survival_button, birth_button, states_button, neighborhood_button
+    
     # set name
     NAME = "Gnarl"
-
+    
     # define rules
     SURVIVAL = [1]
     BIRTH = [1]
     STATES = range(2)
     NEIGHBORHOOD = "M"
-
+    
     # find the new neighbors
     life_window.neighbor_finder(NEIGHBORHOOD)
-
+    
     # kill cells that are not part of the current ruleset
     life_window.equalize(STATES)
-
-    # set global booleans
-    survival_selected = True
-    birth_selected = True
-    states_selected = True
-    neighborhood_selected = True
-
+    
     # make list of buttons to be inactive
     inactive_list = [neighborhood_button, survival_button, birth_button, states_button]
-
+    
     # make other buttons inactive
     for button in inactive_list:
         button.set_active(False)
@@ -622,36 +657,30 @@ def gnarl():
         box.update()
 
 
+# Assimilation Ruleset: [4, 5, 6, 7] / [3, 4, 5] / 2 / M
 def assimilation():
     # import globals
     global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, NAME, \
-        survival_button, birth_button, states_button, neighborhood_button, \
-        survival_selected, birth_selected, states_selected, neighborhood_selected
+        survival_button, birth_button, states_button, neighborhood_button
 
     # set name
     NAME = "Assimilation"
-
+    
     # define rules
-    SURVIVAL = [4,5,6,7]
-    BIRTH = [3,4,5]
+    SURVIVAL = [4, 5, 6, 7]
+    BIRTH = [3, 4, 5]
     STATES = range(2)
     NEIGHBORHOOD = "M"
-
+    
     # find the new neighbors
     life_window.neighbor_finder(NEIGHBORHOOD)
-
+    
     # kill cells that are not part of the current ruleset
     life_window.equalize(STATES)
-
-    # set global booleans
-    survival_selected = True
-    birth_selected = True
-    states_selected = True
-    neighborhood_selected = True
-
+    
     # make list of buttons to be inactive
     inactive_list = [neighborhood_button, survival_button, birth_button, states_button]
-
+    
     # make other buttons inactive
     for button in inactive_list:
         button.set_active(False)
@@ -665,36 +694,30 @@ def assimilation():
         box.update()
 
 
+# BelZhab Ruleset: [2, 3] / [2, 3] / 8 / M
 def belzhab():
     # import globals
     global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, NAME, \
-        survival_button, birth_button, states_button, neighborhood_button, \
-        survival_selected, birth_selected, states_selected, neighborhood_selected
-
+        survival_button, birth_button, states_button, neighborhood_button
+    
     # set name
     NAME = "BelZhab"
-
+    
     # define rules
-    SURVIVAL = [2,3]
-    BIRTH = [2,3]
+    SURVIVAL = [2, 3]
+    BIRTH = [2, 3]
     STATES = range(8)
     NEIGHBORHOOD = "M"
-
+    
     # find the new neighbors
     life_window.neighbor_finder(NEIGHBORHOOD)
-
+    
     # kill cells that are not part of the current ruleset
     life_window.equalize(STATES)
-
-    # set global booleans
-    survival_selected = True
-    birth_selected = True
-    states_selected = True
-    neighborhood_selected = True
-
+    
     # make list of buttons to be inactive
     inactive_list = [neighborhood_button, survival_button, birth_button, states_button]
-
+    
     # make other buttons inactive
     for button in inactive_list:
         button.set_active(False)
@@ -707,36 +730,31 @@ def belzhab():
         box.blit()
         box.update()
 
+
+# Bombers Ruleset: [3, 4, 5] / [2, 4] / 10 / M
 def bombers():
     # import globals
     global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, NAME, \
-        survival_button, birth_button, states_button, neighborhood_button, \
-        survival_selected, birth_selected, states_selected, neighborhood_selected
-
+        survival_button, birth_button, states_button, neighborhood_button
+    
     # set name
     NAME = "Bombers"
-
+    
     # define rules
-    SURVIVAL = [3,4,5]
-    BIRTH = [2,4]
+    SURVIVAL = [3, 4, 5]
+    BIRTH = [2, 4]
     STATES = range(10)
     NEIGHBORHOOD = "M"
-
+    
     # find the new neighbors
     life_window.neighbor_finder(NEIGHBORHOOD)
-
+    
     # kill cells that are not part of the current ruleset
     life_window.equalize(STATES)
-
-    # set global booleans
-    survival_selected = True
-    birth_selected = True
-    states_selected = True
-    neighborhood_selected = True
-
+    
     # make list of buttons to be inactive
     inactive_list = [neighborhood_button, survival_button, birth_button, states_button]
-
+    
     # make other buttons inactive
     for button in inactive_list:
         button.set_active(False)
@@ -750,36 +768,30 @@ def bombers():
         box.update()
 
 
+# Fireworks Ruleset: [2] / [1, 3] / 4 / M
 def fireworks():
     # import globals
     global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, NAME, \
-        survival_button, birth_button, states_button, neighborhood_button, \
-        survival_selected, birth_selected, states_selected, neighborhood_selected
-
+        survival_button, birth_button, states_button, neighborhood_button
+    
     # set name
     NAME = "Fireworks"
-
+    
     # define rules
     SURVIVAL = [2]
-    BIRTH = [1,3]
+    BIRTH = [1, 3]
     STATES = range(4)
     NEIGHBORHOOD = "M"
-
+    
     # find the new neighbors
     life_window.neighbor_finder(NEIGHBORHOOD)
-
+    
     # kill cells that are not part of the current ruleset
     life_window.equalize(STATES)
-
-    # set global booleans
-    survival_selected = True
-    birth_selected = True
-    states_selected = True
-    neighborhood_selected = True
-
+    
     # make list of buttons to be inactive
     inactive_list = [neighborhood_button, survival_button, birth_button, states_button]
-
+    
     # make other buttons inactive
     for button in inactive_list:
         button.set_active(False)
@@ -793,36 +805,30 @@ def fireworks():
         box.update()
 
 
-def snake():
+# SoftFreeze Ruleset: [1, 3, 4, 5, 8] / [3, 8] / 6 / M
+def softfreeze():
     # import globals
     global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, NAME, \
-        survival_button, birth_button, states_button, neighborhood_button, \
-        survival_selected, birth_selected, states_selected, neighborhood_selected
-
+        survival_button, birth_button, states_button, neighborhood_button
+    
     # set name
-    NAME = "Snake"
-
+    NAME = "SoftFreeze"
+    
     # define rules
-    SURVIVAL = [0,3,4,6,7]
-    BIRTH = [2,5]
+    SURVIVAL = [1, 3, 4, 5,8]
+    BIRTH = [3, 8]
     STATES = range(6)
     NEIGHBORHOOD = "M"
-
+    
     # find the new neighbors
     life_window.neighbor_finder(NEIGHBORHOOD)
-
+    
     # kill cells that are not part of the current ruleset
     life_window.equalize(STATES)
-
-    # set global booleans
-    survival_selected = True
-    birth_selected = True
-    states_selected = True
-    neighborhood_selected = True
-
+    
     # make list of buttons to be inactive
     inactive_list = [neighborhood_button, survival_button, birth_button, states_button]
-
+    
     # make other buttons inactive
     for button in inactive_list:
         button.set_active(False)
@@ -840,8 +846,7 @@ def snake():
 def random_ruleset():
     # import globals
     global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, NAME, \
-        survival_button, birth_button, states_button, neighborhood_button, \
-        survival_selected, birth_selected, states_selected, neighborhood_selected
+        survival_button, birth_button, states_button, neighborhood_button
     
     # set name
     NAME = "Random Ruleset"
@@ -850,11 +855,13 @@ def random_ruleset():
     life_window.neighbor_finder(NEIGHBORHOOD)
     
     # randomly pick the neighborhood
-    option = randint(0, 1)
+    option = randint(0, 2)
     if (option == 0):
         NEIGHBORHOOD = "M"
     if (option == 1):
         NEIGHBORHOOD = "VN"
+    if (option == 3):
+        NEIGHBORHOOD = "E"
     
     # holds upper bound
     upper_bound = 0
@@ -863,6 +870,8 @@ def random_ruleset():
     if (NEIGHBORHOOD == "M"):
         upper_bound = 8
     if (NEIGHBORHOOD == "VN"):
+        upper_bound = 4
+    if (NEIGHBORHOOD == "E"):
         upper_bound = 4
     num_survival = randint(1, upper_bound)
     i = 0
@@ -881,6 +890,8 @@ def random_ruleset():
         upper_bound = 8
     if (NEIGHBORHOOD == "VN"):
         upper_bound = 4
+    if (NEIGHBORHOOD == "E"):
+        upper_bound = 4
     num_birth = randint(1, upper_bound)
     i = 0
     while (i < num_birth):
@@ -897,12 +908,6 @@ def random_ruleset():
     
     # kill cells that are not part of the current ruleset
     life_window.equalize(STATES)
-    
-    # set global booleans
-    survival_selected = True
-    birth_selected = True
-    states_selected = True
-    neighborhood_selected = True
     
     # make other buttons inactive
     for button in inactive_list:
@@ -921,17 +926,10 @@ def random_ruleset():
 def custom():
     # import globals
     global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, NAME, \
-        box, survival_button, birth_button, states_button, neighborhood_button, \
-        survival_selected, birth_selected, states_selected, neighborhood_selected
+        box, survival_button, birth_button, states_button, neighborhood_button
     
     # set name
     NAME = "Custom Ruleset"
-    
-    # set global booleans
-    survival_selected = False
-    birth_selected = False
-    states_selected = False
-    neighborhood_selected = False
     
     # set cell attributes
     SURVIVAL = []
@@ -962,6 +960,8 @@ def custom():
         box.blit()
         box.update()
 
+# ______________________________________________________________________________________________________________________
+
 
 '''
 ________________________________________________________________________________________________________________________
@@ -971,18 +971,37 @@ ________________________________________________________________________________
 
 # user chooses which seed will be used
 def seed():
+    # import globals
+    global NAME
+    
     # pause propagation
     pause()
-
-    # list of choices
-    choices = [("Random", seed_random),
-               ("Information", seed_info),
-               ("Cancel", None)]
-
+    
+    # set choices based on which ruleset is being used
+    if NAME == "Conway's Game of Life":
+        # list of choices
+        choices = [("Cap", cap),
+                   ("Butterfly", butterfly),
+                   ("Beacon", beacon),
+                   ("GliderGen", glidergen),
+                   ("Bookend", bookend),
+                   ("Bunnies", bunnies),
+                   ("Random (Alive)", seed_random),
+                   ("Random (Dying)", seed_dying_random),
+                   ("Information", seed_info),
+                   ("Cancel", None)]
+    else:
+        # list of choices
+        choices = [("Random (Alive)", seed_random),
+                   ("Random (Dying)", seed_dying_random),
+                   ("Information", seed_info),
+                   ("Cancel", None)]
+    
     # launches choice window
-    thorpy.launch_blocking_choices("Select a ruleset to be used:\n", choices)
+    thorpy.launch_blocking_choices("Select a seed:\n", choices)
 
 
+# gives seed information
 def seed_info():
     # launch info window
     thorpy.launch_nonblocking_alert("SEED:\n",
@@ -991,15 +1010,128 @@ def seed_info():
                                     "one of the preset seeds for this ruleset.")
 
 
+# seed functions
+# ______________________________________________________________________________________________________________________
+# creates cap (Conway's Game of Life)
+def cap():
+    # reset cells
+    reset()
+    
+    # set positions
+    life_window.grid[8][20].contents = 1
+    life_window.grid[8][21].contents = 1
+    life_window.grid[9][19].contents = 1
+    life_window.grid[10][19].contents = 1
+    life_window.grid[10][20].contents = 1
+    life_window.grid[10][21].contents = 1
+    life_window.grid[9][22].contents = 1
+    life_window.grid[10][22].contents = 1
+
+
+# creates butterfly (Conway's Game of Life)
+def butterfly():
+    # reset cells
+    reset()
+    
+    # set positions
+    life_window.grid[8][19].contents = 1
+    life_window.grid[9][19].contents = 1
+    life_window.grid[9][20].contents = 1
+    life_window.grid[10][19].contents = 1
+    life_window.grid[11][20].contents = 1
+    life_window.grid[10][21].contents = 1
+    life_window.grid[11][22].contents = 1
+    life_window.grid[11][21].contents = 1
+
+
+# creates beacon (Conway's Game of Life)
+def beacon():
+    # reset cells
+    reset()
+    
+    # set positions
+    life_window.grid[10][21].contents = 1
+    life_window.grid[9][21].contents = 1
+    life_window.grid[9][22].contents = 1
+    life_window.grid[12][23].contents = 1
+    life_window.grid[12][24].contents = 1
+    life_window.grid[11][24].contents = 1
+
+
+# creates glidergen (Conway's Game of Life)
+def glidergen():
+    # reset cells
+    reset()
+    
+    # set positions
+    life_window.grid[13][17].contents = 1
+    life_window.grid[12][17].contents = 1
+    life_window.grid[11][18].contents = 1
+    life_window.grid[11][19].contents = 1
+    life_window.grid[10][20].contents = 1
+    life_window.grid[9][20].contents = 1
+    life_window.grid[8][19].contents = 1
+    life_window.grid[9][18].contents = 1
+    life_window.grid[10][17].contents = 1
+    life_window.grid[12][20].contents = 1
+    life_window.grid[13][19].contents = 1
+    life_window.grid[14][18].contents = 1
+
+
+# creates bookend (Conway's Game of Life)
+def bookend():
+    # reset cells
+    reset()
+    
+    # set positions
+    life_window.grid[9][20].contents = 1
+    life_window.grid[10][20].contents = 1
+    life_window.grid[10][21].contents = 1
+    life_window.grid[10][22].contents = 1
+    life_window.grid[9][23].contents = 1
+    life_window.grid[8][23].contents = 1
+    life_window.grid[8][22].contents = 1
+
+
+# creates bunnies (Conway's Game of Life)
+def bunnies():
+    # reset cells
+    reset()
+    
+    # set positions
+    life_window.grid[9][18].contents = 1
+    life_window.grid[10][20].contents = 1
+    life_window.grid[11][20].contents = 1
+    life_window.grid[12][19].contents = 1
+    life_window.grid[12][21].contents = 1
+    life_window.grid[11][23].contents = 1
+    life_window.grid[10][24].contents = 1
+    life_window.grid[9][24].contents = 1
+    life_window.grid[11][25].contents = 1
+
+
 # randomly fills the world with alive and dead cells
 def seed_random():
     # import globals
     global life_window, STATES
+    
+    # iterate through every cell and randomly make it alive or dead
+    for row in life_window.grid:
+        for cell in row:
+            cell.contents = randint(0, 1)
 
+
+# randomly fills the world with alive, dead, and dying cells
+def seed_dying_random():
+    # import globals
+    global life_window, STATES
+    
     # iterate through every cell and randomly make it dead, alive, or in one of the dying states
     for row in life_window.grid:
         for cell in row:
             cell.contents = randint(0, len(STATES) - 1)
+
+# ______________________________________________________________________________________________________________________
 
 
 '''
@@ -1044,11 +1176,23 @@ def survival():
                    (" 4 ", sur_4),
                    ("Information", survival_info),
                    ("Cancel", None)]
+
+    # set choices for Engholdt neighborhood
+    if NEIGHBORHOOD == "E":
+        # list of choices
+        choices = [(" 0 ", sur_0),
+                   (" 1 ", sur_1),
+                   (" 2 ", sur_2),
+                   (" 3 ", sur_3),
+                   (" 4 ", sur_4),
+                   ("Information", survival_info),
+                   ("Cancel", None)]
     
     # launches choice window
     thorpy.launch_blocking_choices("Select survival values to be added or removed:\n", choices)
 
 
+# gives survival information
 def survival_info():
     # launch info window
     thorpy.launch_nonblocking_alert("SURVIVAL:\n",
@@ -1068,13 +1212,10 @@ def survival_info():
 # adds or removes survival value of 0
 def sur_0():
     # import globals
-    global SURVIVAL, survival_selected
+    global SURVIVAL
 
     # boolean indicating if the value has been removed
     removed = False
-    
-    # set global boolean
-    survival_selected = True
     
     # removes 0 if it is present
     if 0 in SURVIVAL:
@@ -1089,13 +1230,10 @@ def sur_0():
 # adds or removes survival value of 1
 def sur_1():
     # import globals
-    global SURVIVAL, survival_selected
+    global SURVIVAL
     
     # boolean indicating if the value has been removed
     removed = False
-
-    # set global boolean
-    survival_selected = True
     
     # removes 0 once other numbers are present
     if 0 in SURVIVAL:
@@ -1116,13 +1254,10 @@ def sur_1():
 # adds or removes survival value of 2
 def sur_2():
     # import globals
-    global SURVIVAL, survival_selected
+    global SURVIVAL
     
     # boolean indicating if the value has been removed
     removed = False
-
-    # set global boolean
-    survival_selected = True
     
     # removes 0 once other numbers are present
     if 0 in SURVIVAL:
@@ -1143,13 +1278,10 @@ def sur_2():
 # adds or removes survival value of 3
 def sur_3():
     # import globals
-    global SURVIVAL, survival_selected
+    global SURVIVAL
     
     # boolean indicating if the value has been removed
     removed = False
-
-    # set global boolean
-    survival_selected = True
     
     # removes 0 once other numbers are present
     if 0 in SURVIVAL:
@@ -1170,13 +1302,10 @@ def sur_3():
 # adds or removes survival value of 4
 def sur_4():
     # import globals
-    global SURVIVAL, survival_selected
+    global SURVIVAL
     
     # boolean indicating if the value has been removed
     removed = False
-
-    # set global boolean
-    survival_selected = True
     
     # removes 0 once other numbers are present
     if 0 in SURVIVAL:
@@ -1197,13 +1326,10 @@ def sur_4():
 # adds or removes survival value of 5
 def sur_5():
     # import globals
-    global SURVIVAL, survival_selected
+    global SURVIVAL
     
     # boolean indicating if the value has been removed
     removed = False
-
-    # set global boolean
-    survival_selected = True
     
     # removes 0 once other numbers are present
     if 0 in SURVIVAL:
@@ -1224,13 +1350,10 @@ def sur_5():
 # adds or removes survival value of 6
 def sur_6():
     # import globals
-    global SURVIVAL, survival_selected
+    global SURVIVAL
     
     # boolean indicating if the value has been removed
     removed = False
-
-    # set global boolean
-    survival_selected = True
     
     # removes 0 once other numbers are present
     if 0 in SURVIVAL:
@@ -1251,13 +1374,10 @@ def sur_6():
 # adds or removes survival value of 7
 def sur_7():
     # import globals
-    global SURVIVAL, survival_selected
+    global SURVIVAL
     
     # boolean indicating if the value has been removed
     removed = False
-
-    # set global boolean
-    survival_selected = True
     
     # removes 0 once other numbers are present
     if 0 in SURVIVAL:
@@ -1278,13 +1398,10 @@ def sur_7():
 # adds or removes survival value of 8
 def sur_8():
     # import globals
-    global SURVIVAL, survival_selected
+    global SURVIVAL
     
     # boolean indicating if the value has been removed
     removed = False
-    
-    # set global boolean
-    survival_selected = True
     
     # removes 0 once other numbers are present
     if 0 in SURVIVAL:
@@ -1346,10 +1463,21 @@ def birth():
                    ("Information", birth_info),
                    ("Cancel", None)]
     
+    # set choices for Engholdt neighborhood
+    if NEIGHBORHOOD == "E":
+        # list of choices
+        choices = [(" 1 ", bir_1),
+                   (" 2 ", bir_2),
+                   (" 3 ", bir_3),
+                   (" 4 ", bir_4),
+                   ("Information", birth_info),
+                   ("Cancel", None)]
+    
     # launches choice window
     thorpy.launch_blocking_choices("Select birth values to be added or removed:\n", choices)
 
 
+# gives birth information
 def birth_info():
     # launch info window
     thorpy.launch_nonblocking_alert("BIRTH:\n",
@@ -1365,13 +1493,10 @@ def birth_info():
 # adds or removes birth value of 1
 def bir_1():
     # import globals
-    global BIRTH, birth_selected
+    global BIRTH
     
     # boolean indicating if the value has been removed
     removed = False
-
-    # set global boolean
-    birth_selected = True
     
     # removes 0 once other numbers are present
     if 0 in BIRTH:
@@ -1392,13 +1517,10 @@ def bir_1():
 # adds or removes birth value of 2
 def bir_2():
     # import globals
-    global BIRTH, birth_selected
+    global BIRTH
     
     # boolean indicating if the value has been removed
     removed = False
-
-    # set global boolean
-    birth_selected = True
     
     # removes 0 once other numbers are present
     if 0 in BIRTH:
@@ -1419,13 +1541,10 @@ def bir_2():
 # adds or removes birth value of 3
 def bir_3():
     # import globals
-    global BIRTH, birth_selected
+    global BIRTH
     
     # boolean indicating if the value has been removed
     removed = False
-
-    # set global boolean
-    birth_selected = True
     
     # removes 0 once other numbers are present
     if 0 in BIRTH:
@@ -1446,13 +1565,10 @@ def bir_3():
 # adds or removes birth value of 4
 def bir_4():
     # import globals
-    global BIRTH, birth_selected
+    global BIRTH
     
     # boolean indicating if the value has been removed
     removed = False
-
-    # set global boolean
-    birth_selected = True
     
     # removes 0 once other numbers are present
     if 0 in BIRTH:
@@ -1473,13 +1589,10 @@ def bir_4():
 # adds or removes birth value of 5
 def bir_5():
     # import globals
-    global BIRTH, birth_selected
+    global BIRTH
     
     # boolean indicating if the value has been removed
     removed = False
-
-    # set global boolean
-    birth_selected = True
     
     # removes 0 once other numbers are present
     if 0 in BIRTH:
@@ -1500,13 +1613,10 @@ def bir_5():
 # adds or removes birth value of 6
 def bir_6():
     # import globals
-    global BIRTH, birth_selected
+    global BIRTH
     
     # boolean indicating if the value has been removed
     removed = False
-
-    # set global boolean
-    birth_selected = True
     
     # removes 0 once other numbers are present
     if 0 in BIRTH:
@@ -1527,13 +1637,10 @@ def bir_6():
 # adds or removes birth value of 7
 def bir_7():
     # import globals
-    global BIRTH, birth_selected
+    global BIRTH
     
     # boolean indicating if the value has been removed
     removed = False
-
-    # set global boolean
-    birth_selected = True
     
     # removes 0 once other numbers are present
     if 0 in BIRTH:
@@ -1554,13 +1661,10 @@ def bir_7():
 # adds or removes birth value of 8
 def bir_8():
     # import globals
-    global BIRTH, birth_selected
+    global BIRTH
     
     # boolean indicating if the value has been removed
     removed = False
-
-    # set global boolean
-    birth_selected = True
     
     # removes 0 once other numbers are present
     if 0 in BIRTH:
@@ -1609,6 +1713,7 @@ def states():
     thorpy.launch_blocking_choices("Select how many states each cell will have:\n", choices)
 
 
+# gives cell state information
 def states_info():
     # launch info window
     thorpy.launch_nonblocking_alert("STATES:\n",
@@ -1631,13 +1736,10 @@ def states_info():
 # sets the number of states to 2
 def sta_2():
     # import globals
-    global STATES, states_selected
+    global STATES
     
     # set states value
     STATES = range(2)
-
-    # set global boolean
-    states_selected = True
 
     # kill cells that are not part of the current ruleset
     life_window.equalize(STATES)
@@ -1645,13 +1747,10 @@ def sta_2():
 # sets the number of states to 3
 def sta_3():
     # import globals
-    global STATES, states_selected
+    global STATES
     
     # set states value
     STATES = range(3)
-
-    # set global boolean
-    states_selected = True
 
     # kill cells that are not part of the current ruleset
     life_window.equalize(STATES)
@@ -1659,13 +1758,10 @@ def sta_3():
 # sets the number of states to 4
 def sta_4():
     # import globals
-    global STATES, states_selected
+    global STATES
     
     # set states value
     STATES = range(4)
-
-    # set global boolean
-    states_selected = True
 
     # kill cells that are not part of the current ruleset
     life_window.equalize(STATES)
@@ -1673,13 +1769,10 @@ def sta_4():
 # sets the number of states to 5
 def sta_5():
     # import globals
-    global STATES, states_selected
+    global STATES
     
     # set states value
     STATES = range(5)
-
-    # set global boolean
-    states_selected = True
 
     # kill cells that are not part of the current ruleset
     life_window.equalize(STATES)
@@ -1687,13 +1780,10 @@ def sta_5():
 # sets the number of states to 6
 def sta_6():
     # import globals
-    global STATES, states_selected
+    global STATES
     
     # set states value
     STATES = range(6)
-
-    # set global boolean
-    states_selected = True
 
     # kill cells that are not part of the current ruleset
     life_window.equalize(STATES)
@@ -1701,13 +1791,10 @@ def sta_6():
 # sets the number of states to 7
 def sta_7():
     # import globals
-    global STATES, states_selected
+    global STATES
     
     # set states value
     STATES = range(7)
-
-    # set global boolean
-    states_selected = True
 
     # kill cells that are not part of the current ruleset
     life_window.equalize(STATES)
@@ -1715,13 +1802,10 @@ def sta_7():
 # sets the number of states to 8
 def sta_8():
     # import globals
-    global STATES, states_selected
+    global STATES
     
     # set states value
     STATES = range(8)
-
-    # set global boolean
-    states_selected = True
 
     # kill cells that are not part of the current ruleset
     life_window.equalize(STATES)
@@ -1729,13 +1813,10 @@ def sta_8():
 # sets the number of states to 9
 def sta_9():
     # import globals
-    global STATES, states_selected
+    global STATES
     
     # set states value
     STATES = range(9)
-
-    # set global boolean
-    states_selected = True
 
     # kill cells that are not part of the current ruleset
     life_window.equalize(STATES)
@@ -1743,13 +1824,10 @@ def sta_9():
 # sets the number of states to 10
 def sta_10():
     # import globals
-    global STATES, states_selected
+    global STATES
     
     # set states value
     STATES = range(10)
-
-    # set global boolean
-    states_selected = True
 
     # kill cells that are not part of the current ruleset
     life_window.equalize(STATES)
@@ -1771,6 +1849,7 @@ def neighborhood():
     # list of choices
     choices = [("Moore Neighborhood (M)", moore_neighborhood),
                ("Von Neumann Neighborhood (VN)", neumann_neighborhood),
+               ("Engholdt Neighborhood (E)", engholdt_neighborhood),
                ("Information", neighborhood_info),
                ("Cancel", None)]
     
@@ -1778,6 +1857,7 @@ def neighborhood():
     thorpy.launch_blocking_choices("Select a neighborhood to be used by the cells:\n", choices)
 
 
+# gives neighborhood information
 def neighborhood_info():
     # launch info window
     thorpy.launch_nonblocking_alert("NEIGHBORHOOD:\n",
@@ -1787,18 +1867,21 @@ def neighborhood_info():
                                     "Moore Neighborhood (M): All 8 cells surrounding the central cell\n" +
                                     "both diagonally and orthogonally.\n\n" +
                                     "Von Neumann Neighborhood (VN): Only the 4 cells surrounding the\n" +
-                                    "central cell orthogonally.")
+                                    "central cell orthogonally.\n\n" +
+                                    "An additional neighborhood has been added:\n\n" +
+                                    "Engholdt Neighborhood (E): Only the 4 cells surrounding the\n" +
+                                    "central cell diagonally")
 
 
+# neighborhood functions
+# ______________________________________________________________________________________________________________________
+# set Moore neighborhood
 def moore_neighborhood():
     # import globals
-    global life_window, neighborhood_selected, NEIGHBORHOOD, survival_button, birth_button, states_button
+    global life_window, NEIGHBORHOOD, survival_button, birth_button, states_button
     
     # set neighborhood
     NEIGHBORHOOD = "M"
-
-    # set global boolean
-    neighborhood_selected = True
     
     # find the new neighbors
     life_window.neighbor_finder(NEIGHBORHOOD)
@@ -1813,15 +1896,13 @@ def moore_neighborhood():
         button.blit()
 
 
+# set Von Neumann neighborhood
 def neumann_neighborhood():
     # import globals
-    global life_window, neighborhood_selected, SURVIVAL, BIRTH, NEIGHBORHOOD, survival_button, birth_button, states_button
+    global life_window, SURVIVAL, BIRTH, NEIGHBORHOOD, survival_button, birth_button, states_button
     
     # set neighborhood
     NEIGHBORHOOD = "VN"
-    
-    # set global boolean
-    neighborhood_selected = True
     
     # define invalid domain values
     invalid_domain = [5,6,7,8]
@@ -1844,6 +1925,39 @@ def neumann_neighborhood():
         button.set_visible(True)
         button.set_active(True)
         button.blit()
+
+
+# set Engholdt neighborhood
+def engholdt_neighborhood():
+    # import globals
+    global life_window, SURVIVAL, BIRTH, NEIGHBORHOOD, survival_button, birth_button, states_button
+    
+    # set neighborhood
+    NEIGHBORHOOD = "E"
+    
+    # define invalid domain values
+    invalid_domain = [5, 6, 7, 8]
+    
+    # remove invalid domain values from SURVIVAL and BIRTH
+    for value in invalid_domain:
+        if value in SURVIVAL:
+            SURVIVAL.remove(value)
+        if value in BIRTH:
+            BIRTH.remove(value)
+        
+    # find the new neighbors
+    life_window.neighbor_finder(NEIGHBORHOOD)
+    
+    # make list of buttons to be active
+    active_list = [survival_button, birth_button, states_button]
+    
+    # make other buttons active
+    for button in active_list:
+        button.set_visible(True)
+        button.set_active(True)
+        button.blit()
+
+# ______________________________________________________________________________________________________________________
 
 
 '''
@@ -1916,6 +2030,7 @@ def play_pause():
     # blit button to screen
     box.blit()
 
+
 # pause propagation
 def pause():
     # import globals
@@ -1931,6 +2046,7 @@ def pause():
 
     # blit button to screen
     box.blit()
+
 
 # kills all cells
 def reset():

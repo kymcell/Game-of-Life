@@ -9,50 +9,6 @@
 # Due Date: 5/6/2019
 #
 
-'''
-SURVIVAL:
-    Survival means a cell will stay alive (active) until the next generation if it satisfies the neighborhood conditions
-    If the neighborhood conditions are not satisfied, the cell will die (deactivate)
-    
-    If a cell has exactly x neighbors, it will survive to the next generation, otherwise it dies
-
-
-BIRTH:
-    Birth means a cell that is dead (deactive) will be born (activate) in the next generation if it satisfies the neighborhood conditions
-    A cell is considered a neighbor if it is within the specified neighborhood and in the alive (active) state
-    
-    A cell is born if it has exactly x neighbors
-
-
-STATES:
-    States refers to the number of states that a cell has
-    A cell can theoretically have an infinite number of states, but a limit of 10 is most reasonable
-    
-    There are x states, alive, dead, and x-2 states of decay
-    
-    For example, if a cell has 4 states, it has the following behavior:
-    0 - Dead    (Graphically, this cell is white)
-    1 - Alive   (Graphically, this cell is black)
-    2 - Dying   (Graphically, this cell is a color different from all previous colors)
-    3 - Dying   (Graphically, this cell is a color different from all previous colors)
-    
-    After the final state of decay, the cell will die (deactivate) and return to a value of 0
-    
-    For the purposes of birth, the states of decay (dying) are not considered to be alive
-
-
-NEIGHBORHOOD:
-    The neighborhood of a cell is defined according to the type of neighborhood it is given
-    There are two main neighborhoods:
-        Moore Neighborhood (M): All 8 cells surrounding the central cell both diagonally and orthogonally
-            Domain: {1,2,3,4,5,6,7,8}
-        Von Neumann Neighborhood (VN): Only the 4 cells surrounding the central cell orthogonally
-            Domain: {1,2,3,4}
-
-NOTE:
-    A domain of 0 is allowed for the Survival value, this means that a living cell will always die in the next generation
-'''
-
 # imports
 import pygame
 from neighborhood import *
@@ -192,6 +148,10 @@ class cell():
         # sets neighbor_positions to the Von Neumann Neighborhood
         if user_neighborhood_choice == "VN":
             self.neighbor_positions = neumann()
+
+        # sets neighbor_positions to the Engholdt Neighborhood
+        if user_neighborhood_choice == "E":
+            self.neighbor_positions = engholdt()
         
         # determine positions of neighbors
         for neighbor in self.neighbor_positions:
@@ -206,8 +166,6 @@ class cell():
                 neighbor[0] -= columns
             if neighbor[1] > rows - 1:
                 neighbor[1] -= rows
-        
-        
     
     
     # advances the state of the cell

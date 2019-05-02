@@ -2,18 +2,13 @@
 # CS 224 Spring 2019
 # Semester Project
 #
-# Creates the game window to be used by game_of_life.py
+# Creates the game window to be used by game_of_life.py, holds cell
+# logic and many of the methods required to interact with cells
 #
 # Authors: Kaelan Engholdt, Garrett Kern, Kyle McElligott
 # Start Date: 2/25/2019
 # Due Date: 5/6/2019
 #
-
-'''
-WORLD:
-    The game world consists of a theoretically infinite 2-Dimensional grid of orthogonal squares
-    For our purposes the grid will have a finite limit, chosen from multiple options by the user
-'''
 
 # imports
 from cell import *
@@ -54,11 +49,11 @@ class game_window():
         RULES = ATTRIBUTES
         
         # set columns, must be one of the following options for 1920x1080 resolution screen:
-        # cols = 24, 48, 96, 120, 192, 240
+        # cols = 48, 96, 120, 192, 240
         self.cols = 96
         
         # sets the number of rows, ensuring there are enough to reach the bottom of the screen
-        self.rows = self.cols * self.height / self.width + 1
+        self.rows = self.cols * self.height / self.width
         
         # get cell_width
         self.cell_width = self.width / self.cols
@@ -97,6 +92,7 @@ class game_window():
             for cell in row:
                 cell.update(RULES, self.grid)
     
+    
     # resizes the grid to the user's choice
     def resize(self, columns):
         # import globals
@@ -109,7 +105,7 @@ class game_window():
         self.cols = columns
         
         # sets the number of rows, ensuring there are enough to reach the bottom of the screen
-        self.rows = self.cols * self.height / self.width + 1
+        self.rows = self.cols * self.height / self.width
         
         # get cell_width
         self.cell_width = self.width / self.cols
@@ -119,6 +115,7 @@ class game_window():
         
         # find the new neighbors
         self.neighbor_finder(RULES[3])
+    
     
     # activates the current cell when it is left-clicked
     def activate_cell(self, mouse_position):
@@ -161,14 +158,16 @@ class game_window():
     
         # changes cell to be dead
         self.grid[grid_position[1]][grid_position[0]].contents = 0
-
+    
+    
     # kills all cells
     def reset(self):
         # iterate through every cell and kill it
         for row in self.grid:
             for cell in row:
                 cell.contents = 0
-
+    
+    
     # kills cells that are not part of the current ruleset
     def equalize(self, cell_states):
         # iterate through every cell and kill the ones not part of the current ruleset
@@ -176,13 +175,15 @@ class game_window():
             for cells in row:
                 if cells.contents not in cell_states:
                     cells.contents = 0
-
+    
+    
     # find the neighbors for each cell
     def neighbor_finder(self, NEIGHBORINO):
         # determine neighbors for all cells
         for row in self.grid:
             for cells in row:
                 cells.find_neighbors(NEIGHBORINO, self.cols, self.rows)
+    
     
     # holds cell logic, evaluates all cells to determine which cells will be alive or dead in the next generation
     def evaluate(self):
