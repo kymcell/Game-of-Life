@@ -74,9 +74,6 @@ REFERENCES:
     Cellular Automata Information:
     www.mirekw.com/ca/index.html
     
-    Game of Life Tutorial:
-    https://www.youtube.com/watch?v=GKe1aGQlKDY&list=PLryDJVmh-ww1OZnkZkzlaewDrhHy2Rli2&index=1
-    
     Thorpy GUI Information:
     http://www.thorpy.org/documentation.html
 '''
@@ -113,7 +110,7 @@ def world():
     # import globals
     global RUNNING, FPS, PAUSED, MENU, \
         life_window, box, survival_button, birth_button, states_button, neighborhood_button, start_button, \
-        ruleset_selected, survival_selected, birth_selected, states_selected, neighborhood_selected
+        seed_button, ruleset_selected, survival_selected, birth_selected, states_selected, neighborhood_selected
     
     # set clock
     clock = pygame.time.Clock()
@@ -271,9 +268,13 @@ def world():
         if ruleset_selected == True:
             start_button.set_visible(True)
             start_button.set_active(True)
+            seed_button.set_visible(True)
+            seed_button.set_active(True)
         else:
             start_button.set_visible(False)
             start_button.set_visible(False)
+            seed_button.set_visible(False)
+            seed_button.set_visible(False)
         if PAUSED == True:
             paused_display()
             paused_update(display_box, label_list)
@@ -972,13 +973,33 @@ ________________________________________________________________________________
 def seed():
     # pause propagation
     pause()
-    
-    # TODO: Finish this function and other choices
+
+    # list of choices
+    choices = [("Random", seed_random),
+               ("Information", seed_info),
+               ("Cancel", None)]
+
+    # launches choice window
+    thorpy.launch_blocking_choices("Select a ruleset to be used:\n", choices)
+
+
+def seed_info():
+    # launch info window
+    thorpy.launch_nonblocking_alert("SEED:\n",
+                                    "The seed defines the starting pattern of the cells.\n" +
+                                    "Seeds can be created by clicking on cells or by selecting\n" +
+                                    "one of the preset seeds for this ruleset.")
 
 
 # randomly fills the world with alive and dead cells
 def seed_random():
-    pass # TODO: Delete this line and finish the function
+    # import globals
+    global life_window, STATES
+
+    # iterate through every cell and randomly make it dead, alive, or in one of the dying states
+    for row in life_window.grid:
+        for cell in row:
+            cell.contents = randint(0, len(STATES) - 1)
 
 
 '''
@@ -1916,6 +1937,9 @@ def reset():
     # import globals
     global life_window
     
+    # pause propagation
+    pause()
+    
     # call the life_window reset function
     life_window.reset()
 
@@ -1967,6 +1991,7 @@ if __name__ == "__main__":
     states_button = None
     neighborhood_button = None
     start_button = None
+    seed_button = None
     
     # global booleans
     ruleset_selected = False
