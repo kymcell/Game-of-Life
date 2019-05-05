@@ -103,8 +103,8 @@ How to start the program:
     From command line type 'python3 game_of_life.py' to run the program.
 
     PyCharm users:
-    Create a new project and place all files
-    Clicking the run button on the 'game_of_life.py' file.
+    Create a new project and place all files within the project. Install the required modules before starting the program.
+    To run the program, click the run button on the 'game_of_life.py' file.
 
 
 How to use the program:
