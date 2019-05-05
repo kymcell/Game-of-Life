@@ -1,8 +1,9 @@
 #
 # CS 224 Spring 2019
-# Semester Project
+# Semester Project: The Game of Life
 #
-# Holds cell values and methods for changing cell values, comprises all cells in the game_of_life.py
+# Holds cell values and methods for changing cell values,
+# comprises all cells within the game of life.
 #
 # Authors: Kaelan Engholdt, Garrett Kern, Kyle McElligott
 # Start Date: 2/25/2019
@@ -58,41 +59,57 @@ class cell():
         # import globals
         global STATES, SCALE
         
-        # if the cell is alive, fill the cell
+        # if the cell is alive, fill the cell: Black
         if self.contents == 1:
             self.image.fill( (0, 0, 0) )
         
-        # if the cell is dying, fill the cell with a unique color
+        # if the cell is dying, fill the cell with a unique color: Blue
         elif self.contents == 2:
-            self.image.fill( (4, 85, 216) )
+            self.image.fill( (0, 0, 255) )
         
-        # if the cell is dying, fill the cell with a unique color
+        # if the cell is dying, fill the cell with a unique color: Light Blue
         elif self.contents == 3:
-            self.image.fill( (226, 20, 20) )
+            self.image.fill( (0, 128, 255) )
         
-        # if the cell is dying, fill the cell with a unique color
+        # if the cell is dying, fill the cell with a unique color: Teal
         elif self.contents == 4:
-            self.image.fill( (131, 4, 216) )
+            self.image.fill( (0, 255, 255) )
         
-        # if the cell is dying, fill the cell with a unique color
+        # if the cell is dying, fill the cell with a unique color: Sea Green
         elif self.contents == 5:
-            self.image.fill( (12, 211, 49) )
+            self.image.fill( (0, 255, 128) )
         
-        # if the cell is dying, fill the cell with a unique color
+        # if the cell is dying, fill the cell with a unique color: Green
         elif self.contents == 6:
-            self.image.fill( (255, 159, 25) )
+            self.image.fill( (0, 255, 0) )
         
-        # if the cell is dying, fill the cell with a unique color
+        # if the cell is dying, fill the cell with a unique color: Lime Green
         elif self.contents == 7:
-            self.image.fill( (25, 255, 255) )
+            self.image.fill( (128, 255, 0) )
         
-        # if the cell is dying, fill the cell with a unique color
+        # if the cell is dying, fill the cell with a unique color: Yellow
         elif self.contents == 8:
-            self.image.fill( (235, 255, 25) )
+            self.image.fill( (255, 255, 0) )
         
-        # if the cell is dying, fill the cell with a unique color
+        # if the cell is dying, fill the cell with a unique color: Orange
         elif self.contents == 9:
-            self.image.fill( (255, 25, 209) )
+            self.image.fill( (255, 128, 0) )
+        
+        # if the cell is dying, fill the cell with a unique color: Red
+        elif self.contents == 10:
+            self.image.fill((255, 0, 0))
+        
+        # if the cell is dying, fill the cell with a unique color: Pink
+        elif self.contents == 11:
+            self.image.fill((255, 0, 128))
+        
+        # if the cell is dying, fill the cell with a unique color: Purple
+        elif self.contents == 12:
+            self.image.fill((255, 0, 255))
+        
+        # if the cell is dying, fill the cell with a unique color: Blurple
+        elif self.contents == 13:
+            self.image.fill((128, 0, 255))
         
         # if the cell is not alive, draw border around cell
         else:

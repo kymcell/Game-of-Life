@@ -1,6 +1,6 @@
 #
 # CS 224 Spring 2019
-# Semester Project
+# Semester Project: The Game of Life
 #
 # There are infinite possibilities within the realm of cellular automata.
 # This program seeks to emulate many of those possibilities through
@@ -11,83 +11,10 @@
 # Due Date: 5/6/2019
 #
 
-'''
-WORLD:
-    The game world consists of a theoretically infinite 2-Dimensional grid of orthogonal squares
-    For our purposes the grid will have a finite limit, chosen from multiple options by the user
-
-RULESETS:
-    Rulesets are named using the following format:
-    Survival / Birth / States / Neighborhood
-    
-    For example, Conway's Game of Life has the following ruleset:
-    [2, 3] / [3] / 2 / M
-    
-    If a cell has exactly 2 or 3 neighbors, it will survive to the next generation, otherwise it dies
-    A cell is born if it has exactly 3 neighbors
-    There are 2 states, alive and dead
-    Utilizes the Moore neighborhood
-
-
-SURVIVAL:
-    Survival means a cell will stay alive (active) until the next generation if it satisfies the neighborhood conditions
-    If the neighborhood conditions are not satisfied, the cell will die (deactivate)
-    
-    If a cell has exactly x neighbors, it will survive to the next generation, otherwise it dies
-
-
-BIRTH:
-    Birth means a cell that is dead (deactive) will be born (activate) in the next generation if it satisfies the neighborhood conditions
-    A cell is considered a neighbor if it is within the specified neighborhood and in the alive (active) state
-    
-    A cell is born if it has exactly x neighbors
-
-
-STATES:
-    States refers to the number of states that a cell has
-    A cell can theoretically have an infinite number of states, but a limit of 10 is most reasonable
-    
-    There are x states, alive, dead, and x-2 states of decay
-    
-    For example, if a cell has 4 states, it has the following behavior:
-    0 - Dead    (Graphically, this cell is white)
-    1 - Alive   (Graphically, this cell is black)
-    2 - Dying   (Graphically, this cell is a color different from all previous colors)
-    3 - Dying   (Graphically, this cell is a color different from all previous colors)
-    
-    After the final state of decay, the cell will die (deactivate) and return to a value of 0
-    
-    For the purposes of birth, the states of decay (dying) are not considered to be alive
-
-
-NEIGHBORHOOD:
-    The neighborhood of a cell is defined according to the type of neighborhood it is given
-    There are two main neighborhoods:
-        Moore Neighborhood (M): All 8 cells surrounding the central cell both diagonally and orthogonally
-            Domain: {1,2,3,4,5,6,7,8}
-        Von Neumann Neighborhood (VN): Only the 4 cells surrounding the central cell orthogonally
-            Domain: {1,2,3,4}
-    
-    An additional neighborhood has been added:
-        Engholdt Neighborhood (E): Only the 4 cells surrounding the central cell diagonally
-            Domain: {1,2,3,4}
-
-NOTE:
-    A domain of 0 is allowed for the Survival value, this means that a living cell will always die in the next generation
-
-REFERENCES:
-    Cellular Automata Information:
-    www.mirekw.com/ca/index.html
-    
-    Thorpy GUI Information:
-    http://www.thorpy.org/documentation.html
-'''
-
 # imports
 import thorpy
 from random import *
 from game_window import *
-
 
 '''
 ________________________________________________________________________________________________________________________
@@ -241,7 +168,7 @@ def world():
     height = resolution.current_h
     
     # set the position of the display box
-    display_box.set_topleft((width / 2, y_offset / 20))
+    display_box.set_topleft((width // 2, y_offset // 20))
     display_box.blit()
     display_box.update()
     
@@ -254,7 +181,7 @@ def world():
         element.surface = window
     
     # set the position of the box
-    box.set_topleft((width / 20, y_offset / 4))
+    box.set_topleft((width // 20, y_offset // 4))
     
     # blit and update the box
     box.blit()
@@ -483,7 +410,12 @@ def rules():
                ("BelZhab", belzhab),
                ("Bombers", bombers),
                ("Fireworks", fireworks),
-               ("SoftFreeze", softfreeze),
+               ("SoftFreeze", soft_freeze),
+               ("Flaming Starbows", flaming_starbows),
+               ("Spirals", spirals),
+               ("Star Wars", star_wars),
+               ("Swirl", swirl),
+               ("Screens", screens),
                ("Custom", custom),
                ("Information", ruleset_info),
                ("Cancel", None)]
@@ -806,7 +738,7 @@ def fireworks():
 
 
 # SoftFreeze Ruleset: [1, 3, 4, 5, 8] / [3, 8] / 6 / M
-def softfreeze():
+def soft_freeze():
     # import globals
     global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, NAME, \
         survival_button, birth_button, states_button, neighborhood_button
@@ -842,7 +774,192 @@ def softfreeze():
         box.update()
 
 
-# generates random values for Survival / Birth / States / Neighboorhood
+# Flaming Starbows Ruleset: [3, 4, 7] / [2, 3] / 8 / M
+def flaming_starbows():
+    # import globals
+    global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, NAME, \
+        survival_button, birth_button, states_button, neighborhood_button
+    
+    # set name
+    NAME = "Flaming Starbows"
+    
+    # define rules
+    SURVIVAL = [3, 4, 7]
+    BIRTH = [2, 3]
+    STATES = range(8)
+    NEIGHBORHOOD = "M"
+    
+    # find the new neighbors
+    life_window.neighbor_finder(NEIGHBORHOOD)
+    
+    # kill cells that are not part of the current ruleset
+    life_window.equalize(STATES)
+    
+    # make list of buttons to be inactive
+    inactive_list = [neighborhood_button, survival_button, birth_button, states_button]
+    
+    # make other buttons inactive
+    for button in inactive_list:
+        button.set_active(False)
+        button.set_visible(False)
+        button.blit()
+        box.blit()
+        box.blit()
+        box.blit()
+        box.blit()
+        box.blit()
+        box.update()
+
+
+# Spirals Ruleset: [2] / [2, 3, 4] / 5 / M
+def spirals():
+    # import globals
+    global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, NAME, \
+        survival_button, birth_button, states_button, neighborhood_button
+    
+    # set name
+    NAME = "Spirals"
+    
+    # define rules
+    SURVIVAL = [2]
+    BIRTH = [2, 3, 4]
+    STATES = range(5)
+    NEIGHBORHOOD = "M"
+    
+    # find the new neighbors
+    life_window.neighbor_finder(NEIGHBORHOOD)
+    
+    # kill cells that are not part of the current ruleset
+    life_window.equalize(STATES)
+    
+    # make list of buttons to be inactive
+    inactive_list = [neighborhood_button, survival_button, birth_button, states_button]
+    
+    # make other buttons inactive
+    for button in inactive_list:
+        button.set_active(False)
+        button.set_visible(False)
+        button.blit()
+        box.blit()
+        box.blit()
+        box.blit()
+        box.blit()
+        box.blit()
+        box.update()
+
+
+# Star Wars Ruleset: [3, 4, 5] / [2] / 4 / M
+def star_wars():
+    # import globals
+    global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, NAME, \
+        survival_button, birth_button, states_button, neighborhood_button
+    
+    # set name
+    NAME = "Star Wars"
+    
+    # define rules
+    SURVIVAL = [3, 4, 5]
+    BIRTH = [2]
+    STATES = range(4)
+    NEIGHBORHOOD = "M"
+    
+    # find the new neighbors
+    life_window.neighbor_finder(NEIGHBORHOOD)
+    
+    # kill cells that are not part of the current ruleset
+    life_window.equalize(STATES)
+    
+    # make list of buttons to be inactive
+    inactive_list = [neighborhood_button, survival_button, birth_button, states_button]
+    
+    # make other buttons inactive
+    for button in inactive_list:
+        button.set_active(False)
+        button.set_visible(False)
+        button.blit()
+        box.blit()
+        box.blit()
+        box.blit()
+        box.blit()
+        box.blit()
+        box.update()
+
+
+# Swirl Ruleset: [2, 3] / [3, 4] / 8 / M
+def swirl():
+    # import globals
+    global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, NAME, \
+        survival_button, birth_button, states_button, neighborhood_button
+    
+    # set name
+    NAME = "Swirl"
+    
+    # define rules
+    SURVIVAL = [2, 3]
+    BIRTH = [3, 4]
+    STATES = range(8)
+    NEIGHBORHOOD = "M"
+    
+    # find the new neighbors
+    life_window.neighbor_finder(NEIGHBORHOOD)
+    
+    # kill cells that are not part of the current ruleset
+    life_window.equalize(STATES)
+    
+    # make list of buttons to be inactive
+    inactive_list = [neighborhood_button, survival_button, birth_button, states_button]
+    
+    # make other buttons inactive
+    for button in inactive_list:
+        button.set_active(False)
+        button.set_visible(False)
+        button.blit()
+        box.blit()
+        box.blit()
+        box.blit()
+        box.blit()
+        box.blit()
+        box.update()
+
+
+# Screens Ruleset: [2, 3] / [2, 3] / 14 / VN
+def screens():
+    # import globals
+    global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, NAME, \
+        survival_button, birth_button, states_button, neighborhood_button
+    
+    # set name
+    NAME = "Screens"
+    
+    # define rules
+    SURVIVAL = [2, 3]
+    BIRTH = [2, 3]
+    STATES = range(14)
+    NEIGHBORHOOD = "VN"
+    
+    # find the new neighbors
+    life_window.neighbor_finder(NEIGHBORHOOD)
+    
+    # kill cells that are not part of the current ruleset
+    life_window.equalize(STATES)
+    
+    # make list of buttons to be inactive
+    inactive_list = [neighborhood_button, survival_button, birth_button, states_button]
+    
+    # make other buttons inactive
+    for button in inactive_list:
+        button.set_active(False)
+        button.set_visible(False)
+        button.blit()
+        box.blit()
+        box.blit()
+        box.blit()
+        box.blit()
+        box.blit()
+        box.update()
+
+
+# generates random values for Survival / Birth / States / Neighboorhood; currently unimplemented as it causes crashes
 def random_ruleset():
     # import globals
     global SURVIVAL, BIRTH, STATES, NEIGHBORHOOD, NAME, \
@@ -901,7 +1018,7 @@ def random_ruleset():
             i += 1
     
     # randomly pick STATES values
-    STATES = range(randint(2, 10))
+    STATES = range(randint(2, 14))
     
     # make list of buttons to be inactive
     inactive_list = [neighborhood_button, survival_button, birth_button, states_button]
@@ -1113,7 +1230,7 @@ def bunnies():
 # randomly fills the world with alive and dead cells
 def seed_random():
     # import globals
-    global life_window, STATES
+    global life_window
     
     # iterate through every cell and randomly make it alive or dead
     for row in life_window.grid:
@@ -1706,6 +1823,10 @@ def states():
                (" 8 ", sta_8),
                (" 9 ", sta_9),
                ("10", sta_10),
+               ("11", sta_11),
+               ("12", sta_12),
+               ("13", sta_13),
+               ("14", sta_14),
                ("Information", states_info),
                ("Cancel", None)]
     
@@ -1829,6 +1950,50 @@ def sta_10():
     # set states value
     STATES = range(10)
 
+    # kill cells that are not part of the current ruleset
+    life_window.equalize(STATES)
+
+# sets the number of states to 11
+def sta_11():
+    # import globals
+    global STATES
+    
+    # set states value
+    STATES = range(11)
+    
+    # kill cells that are not part of the current ruleset
+    life_window.equalize(STATES)
+
+# sets the number of states to 12
+def sta_12():
+    # import globals
+    global STATES
+    
+    # set states value
+    STATES = range(12)
+    
+    # kill cells that are not part of the current ruleset
+    life_window.equalize(STATES)
+
+# sets the number of states to 13
+def sta_13():
+    # import globals
+    global STATES
+    
+    # set states value
+    STATES = range(13)
+    
+    # kill cells that are not part of the current ruleset
+    life_window.equalize(STATES)
+
+# sets the number of states to 14
+def sta_14():
+    # import globals
+    global STATES
+    
+    # set states value
+    STATES = range(14)
+    
     # kill cells that are not part of the current ruleset
     life_window.equalize(STATES)
 

@@ -1,9 +1,9 @@
 #
 # CS 224 Spring 2019
-# Semester Project
+# Semester Project: The Game of Life
 #
 # Creates the game window to be used by game_of_life.py, holds cell
-# logic and many of the methods required to interact with cells
+# logic and many of the methods required to interact with cells.
 #
 # Authors: Kaelan Engholdt, Garrett Kern, Kyle McElligott
 # Start Date: 2/25/2019
@@ -53,10 +53,10 @@ class game_window():
         self.cols = 96
         
         # sets the number of rows, ensuring there are enough to reach the bottom of the screen
-        self.rows = self.cols * self.height / self.width
+        self.rows = self.cols * self.height // self.width
         
         # get cell_width
-        self.cell_width = self.width / self.cols
+        self.cell_width = self.width // self.cols
         
         # create grid of cell objects
         self.grid = [ [cell(self.image, i, j, self.cell_width, ATTRIBUTES) for i in range(self.cols) ] for j in range(self.rows) ]
@@ -105,10 +105,10 @@ class game_window():
         self.cols = columns
         
         # sets the number of rows, ensuring there are enough to reach the bottom of the screen
-        self.rows = self.cols * self.height / self.width
+        self.rows = self.cols * self.height // self.width
         
         # get cell_width
-        self.cell_width = self.width / self.cols
+        self.cell_width = self.width // self.cols
 
         # create grid of cell objects
         self.grid = [[cell(self.image, i, j, self.cell_width, RULES) for i in range(self.cols)] for j in range(self.rows)]
@@ -123,10 +123,10 @@ class game_window():
         grid_position = [mouse_position[0], mouse_position[1]]
         
         # determines column in grid
-        grid_position[0] = grid_position[0] / self.cell_width
+        grid_position[0] = grid_position[0] // self.cell_width
         
         # determines row in grid
-        grid_position[1] = ( grid_position[1] - self.y_offset ) / self.cell_width
+        grid_position[1] = ( grid_position[1] - self.y_offset ) // self.cell_width
         
         # changes cell to be alive
         if self.grid[grid_position[1]][grid_position[0]].contents == 0:
@@ -151,10 +151,10 @@ class game_window():
         grid_position = [mouse_position[0], mouse_position[1]]
     
         # determines column in grid
-        grid_position[0] = grid_position[0] / self.cell_width
+        grid_position[0] = grid_position[0] // self.cell_width
     
         # determines row in grid
-        grid_position[1] = (grid_position[1] - self.y_offset) / self.cell_width
+        grid_position[1] = (grid_position[1] - self.y_offset) // self.cell_width
     
         # changes cell to be dead
         self.grid[grid_position[1]][grid_position[0]].contents = 0
